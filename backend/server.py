@@ -426,6 +426,8 @@ async def get_collection_data(collection_name: str, skip: int = 0, limit: int = 
             "skip": skip,
             "limit": limit
         }
+    except HTTPException:
+        raise  # Re-raise HTTPExceptions as-is
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
