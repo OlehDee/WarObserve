@@ -41,8 +41,10 @@ class CRUDBase:
 
     async def get_by_id(self, doc_id: str) -> Optional[dict]:
         """Get document by ID"""
-        doc = await self.collection.find_one({"id": doc_id})
+        # Try both 'id' and '_id' fields for compatibility
+        doc = await self.collection.find_one({"id": doc_id}) or await self.collection.find_one({"_id": doc_id})
         if doc:
+            doc['id'] = doc.get('id', str(doc['_id']))
             doc['_id'] = str(doc['_id'])
         return doc
 
