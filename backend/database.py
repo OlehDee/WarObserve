@@ -66,6 +66,12 @@ class CRUDBase:
             # Ensure all docs have both id and _id fields
             doc['id'] = doc.get('id', str(doc['_id']))
             doc['_id'] = str(doc['_id'])
+            
+            # Convert datetime objects to ISO strings for JSON serialization
+            for key, value in doc.items():
+                if hasattr(value, 'isoformat'):  # Check if it's a datetime object
+                    doc[key] = value.isoformat()
+                    
         return docs
 
     async def count(self, filter_dict: dict = None) -> int:
