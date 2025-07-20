@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import AdminPanel from './AdminPanel';
 import AdminLogin from './AdminLogin';
+import PasswordManager from './PasswordManager';
 
 const ProtectedAdminPanel = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [showPasswordManager, setShowPasswordManager] = useState(false);
 
   useEffect(() => {
     // Check if user is already authenticated
@@ -42,6 +44,12 @@ const ProtectedAdminPanel = () => {
       <div className="bg-red-600 text-white p-2 text-center">
         <span className="mr-4">🔐 Режим адміністратора</span>
         <button 
+          onClick={() => setShowPasswordManager(true)}
+          className="bg-red-700 hover:bg-red-800 px-3 py-1 rounded text-sm mr-2"
+        >
+          Змінити пароль
+        </button>
+        <button 
           onClick={handleLogout}
           className="bg-red-700 hover:bg-red-800 px-3 py-1 rounded text-sm"
         >
@@ -49,6 +57,10 @@ const ProtectedAdminPanel = () => {
         </button>
       </div>
       <AdminPanel />
+      <PasswordManager 
+        isOpen={showPasswordManager} 
+        onClose={() => setShowPasswordManager(false)} 
+      />
     </div>
   );
 };
