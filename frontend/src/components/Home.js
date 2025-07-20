@@ -48,6 +48,11 @@ const Home = () => {
   // Mobile menu state
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  // Modal state
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalType, setModalType] = useState(null); // 'news' or 'project'
+  const [modalData, setModalData] = useState(null);
+
   // State for API data
   const [newsArticles, setNewsArticles] = useState([]);
   const [teamMembers, setTeamMembers] = useState([]);
