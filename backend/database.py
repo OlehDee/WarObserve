@@ -98,12 +98,29 @@ class CRUDBase:
     async def update(self, doc_id: str, update_data: dict) -> Optional[dict]:
         """Update document by ID"""
         update_data['updatedAt'] = datetime.utcnow()
+        
+        # Try to update by 'id' field first
         result = await self.collection.find_one_and_update(
             {"id": doc_id},
             {"$set": update_data},
             return_document=True
         )
+        
+        # If not found, try by ObjectId
+        if not result:
+            try:
+                from bson import ObjectId
+                if len(doc_id) == 24:  # MongoDB ObjectId length
+                    result = await self.collection.find_one_and_update(
+                        {"_id": ObjectId(doc_id)},
+                        {"$set": update_data},
+                        return_document=True
+                    )
+            except:
+                pass
+        
         if result:
+            result['id'] = result.get('id', str(result['_id']))
             result['_id'] = str(result['_id'])
         return result
 
