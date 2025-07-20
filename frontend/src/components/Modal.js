@@ -139,12 +139,12 @@ const Modal = ({ isOpen, onClose, type, data, onSubmit, formData, setFormData, f
           
           <div style={{ marginBottom: '24px' }}>
             <label style={{ display: 'block', fontSize: '14px', fontWeight: '600', marginBottom: '6px', color: 'var(--text-primary)' }}>
-              Супровідний лист *
+              Cover Letter *
             </label>
             <textarea
               value={formData.coverLetter || ''}
               onChange={(e) => setFormData({ ...formData, coverLetter: e.target.value })}
-              placeholder="Чому вас цікавить ця позиція?..."
+              placeholder="Why are you interested in this position?..."
               style={{
                 width: '100%',
                 padding: '12px',
