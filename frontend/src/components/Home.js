@@ -96,14 +96,6 @@ const Home = () => {
     subject: '',
     message: ''
   });
-  const [applicationForm, setApplicationForm] = useState({
-    jobId: '',
-    name: '',
-    email: '',
-    phone: '',
-    experience: '',
-    coverLetter: ''
-  });
   const [expandedFaq, setExpandedFaq] = useState(null);
   const [formSubmitting, setFormSubmitting] = useState(false);
 
