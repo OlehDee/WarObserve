@@ -69,7 +69,7 @@ async def get_news_articles(
         if category:
             articles = await news_articles_crud.get_by_category(category, skip, limit)
         else:
-            articles = await news_articles_crud.get_published(skip, limit)
+            articles = await news_articles_crud.get_all(skip=skip, limit=limit)  # Get all articles instead of just published
         return serialize_datetime_fields(articles)
     except Exception as e:
         logger.error(f"Error fetching news articles: {str(e)}")
