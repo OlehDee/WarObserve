@@ -735,9 +735,9 @@ const Home = () => {
                   <div style={{ marginBottom: '16px' }}>
                     <strong style={{ fontSize: '14px' }}>Requirements:</strong>
                     <ul style={{ fontSize: '14px', marginTop: '8px', paddingLeft: '20px' }}>
-                      {job.requirements.slice(0, 2).map((req, index) => (
+                      {job.requirements && Array.isArray(job.requirements) ? job.requirements.slice(0, 2).map((req, index) => (
                         <li key={index}>{req}</li>
-                      ))}
+                      )) : <li>No requirements listed</li>}
                     </ul>
                   </div>
                   <button 
