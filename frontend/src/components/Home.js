@@ -62,7 +62,6 @@ const Home = () => {
     partners: true,
     resources: true,
     jobs: true,
-    testimonials: true,
     faq: true,
     donations: true
   });
