@@ -328,7 +328,7 @@ const Modal = ({ isOpen, onClose, type, data, onSubmit, formData, setFormData, f
           <div className="project-team" style={{ marginBottom: '24px', padding: '16px', background: 'var(--bg-subtle)', borderRadius: '8px' }}>
             <h4 style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '16px', fontWeight: '600', marginBottom: '12px', color: 'var(--text-primary)' }}>
               <Users size={18} />
-              Команда проекту:
+              Project Team:
             </h4>
             <div style={{ fontSize: '14px', color: 'var(--text-secondary)' }}>
               {data.team.join(', ')}
