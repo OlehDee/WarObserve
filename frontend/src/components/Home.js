@@ -1120,6 +1120,10 @@ const Home = () => {
         onClose={closeModal}
         type={modalType}
         data={modalData}
+        onSubmit={modalType === 'job-application' ? handleJobApplicationSubmit : undefined}
+        formData={jobApplicationForm}
+        setFormData={setJobApplicationForm}
+        formSubmitting={formSubmitting}
       />
     </div>
   );
