@@ -339,7 +339,7 @@ const Modal = ({ isOpen, onClose, type, data, onSubmit, formData, setFormData, f
         {data.results && (
           <div className="project-results" style={{ marginBottom: '24px', padding: '16px', background: 'var(--bg-card)', border: '1px solid var(--border-light)', borderRadius: '8px' }}>
             <h4 style={{ fontSize: '16px', fontWeight: '600', marginBottom: '12px', color: 'var(--text-primary)' }}>
-              📊 Результати:
+              📊 Results:
             </h4>
             <div style={{ fontSize: '14px', color: 'var(--text-secondary)', lineHeight: '1.5' }}>
               {data.results}
