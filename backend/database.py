@@ -63,6 +63,8 @@ class CRUDBase:
         
         docs = await cursor.to_list(length=limit)
         for doc in docs:
+            # Ensure all docs have both id and _id fields
+            doc['id'] = doc.get('id', str(doc['_id']))
             doc['_id'] = str(doc['_id'])
         return docs
 
