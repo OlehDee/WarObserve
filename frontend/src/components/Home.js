@@ -221,36 +221,6 @@ const Home = () => {
     }
   };
 
-  // Handle job application submission
-  const handleApplicationSubmit = async (e) => {
-    e.preventDefault();
-    setFormSubmitting(true);
-    
-    try {
-      await jobsAPI.apply(applicationForm.jobId, {
-        name: applicationForm.name,
-        email: applicationForm.email,
-        phone: applicationForm.phone,
-        experience: applicationForm.experience,
-        coverLetter: applicationForm.coverLetter
-      });
-      
-      alert('Your application has been submitted successfully!');
-      setApplicationForm({
-        jobId: '',
-        name: '',
-        email: '',
-        phone: '',
-        experience: '',
-        coverLetter: ''
-      });
-    } catch (error) {
-      alert(`Failed to submit application: ${error.message}`);
-    } finally {
-      setFormSubmitting(false);
-    }
-  };
-
   // Handle donation selection
   const handleDonation = async (tier) => {
     setFormSubmitting(true);
