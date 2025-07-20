@@ -28,6 +28,25 @@ app = FastAPI(
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
 
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
+
+# Utility function to convert datetime objects to strings for JSON serialization
+def serialize_datetime_fields(data):
+    """Convert datetime objects to ISO format strings in a document or list of documents"""
+    if isinstance(data, list):
+        for item in data:
+            serialize_datetime_fields(item)
+    elif isinstance(data, dict):
+        for key, value in data.items():
+            if hasattr(value, 'isoformat'):
+                data[key] = value.isoformat()
+    return data
+
 # Helper function for pagination
 def get_pagination_params(page: int = Query(1, ge=1), limit: int = Query(10, ge=1, le=100)):
     skip = (page - 1) * limit
@@ -51,13 +70,7 @@ async def get_news_articles(
             articles = await news_articles_crud.get_by_category(category, skip, limit)
         else:
             articles = await news_articles_crud.get_published(skip, limit)
-        
-        # Convert datetime objects to strings for JSON serialization
-        for article in articles:
-            for key, value in article.items():
-                if hasattr(value, 'isoformat'):
-                    article[key] = value.isoformat()
-        return articles
+        return serialize_datetime_fields(articles)
     except Exception as e:
         logger.error(f"Error fetching news articles: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -69,12 +82,7 @@ async def get_news_article(article_id: str):
         article = await news_articles_crud.get_by_id(article_id)
         if not article:
             raise HTTPException(status_code=404, detail="Article not found")
-        
-        # Convert datetime objects to strings
-        for key, value in article.items():
-            if hasattr(value, 'isoformat'):
-                article[key] = value.isoformat()
-        return article
+        return serialize_datetime_fields(article)
     except HTTPException:
         raise
     except Exception as e:
@@ -90,12 +98,7 @@ async def get_news_by_category(
     """Get news articles by category"""
     try:
         articles = await news_articles_crud.get_by_category(category, skip, limit)
-        # Convert datetime objects to strings
-        for article in articles:
-            for key, value in article.items():
-                if hasattr(value, 'isoformat'):
-                    article[key] = value.isoformat()
-        return articles
+        return serialize_datetime_fields(articles)
     except Exception as e:
         logger.error(f"Error fetching articles by category {category}: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -106,69 +109,80 @@ async def get_team_members():
     """Get all active team members"""
     try:
         members = await team_members_crud.get_all()
-        # Convert datetime objects to strings for JSON serialization
-        for member in members:
-            for key, value in member.items():
-                if hasattr(value, 'isoformat'):
-                    member[key] = value.isoformat()
-        return members
+        return serialize_datetime_fields(members)
     except Exception as e:
         logger.error(f"Error fetching team members: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
-@api_router.get("/team/{member_id}", response_model=TeamMember)
+@api_router.get("/team/{member_id}")
 async def get_team_member(member_id: str):
     """Get a single team member by ID"""
-    member = await team_members_crud.get_by_id(member_id)
-    if not member:
-        raise HTTPException(status_code=404, detail="Team member not found")
-    return member
+    try:
+        member = await team_members_crud.get_by_id(member_id)
+        if not member:
+            raise HTTPException(status_code=404, detail="Team member not found")
+        return serialize_datetime_fields(member)
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error fetching team member {member_id}: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 # Research Projects Endpoints
-@api_router.get("/research", response_model=List[ResearchProject])
+@api_router.get("/research")
 async def get_research_projects():
     """Get all research projects"""
     try:
         projects = await research_projects_crud.get_all()
-        return projects
+        return serialize_datetime_fields(projects)
     except Exception as e:
+        logger.error(f"Error fetching research projects: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
-@api_router.get("/research/{project_id}", response_model=ResearchProject)
+@api_router.get("/research/{project_id}")
 async def get_research_project(project_id: str):
     """Get a single research project by ID"""
-    project = await research_projects_crud.get_by_id(project_id)
-    if not project:
-        raise HTTPException(status_code=404, detail="Research project not found")
-    return project
+    try:
+        project = await research_projects_crud.get_by_id(project_id)
+        if not project:
+            raise HTTPException(status_code=404, detail="Research project not found")
+        return serialize_datetime_fields(project)
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error fetching research project {project_id}: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
 
-@api_router.get("/research/status/{status}", response_model=List[ResearchProject])
+@api_router.get("/research/status/{status}")
 async def get_research_by_status(status: str):
     """Get research projects by status"""
     try:
         projects = await research_projects_crud.get_by_status(status)
-        return projects
+        return serialize_datetime_fields(projects)
     except Exception as e:
+        logger.error(f"Error fetching projects by status {status}: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 # Partners Endpoints
-@api_router.get("/partners", response_model=List[Partner])
+@api_router.get("/partners")
 async def get_partners():
     """Get all active partners"""
     try:
-        partners = await partners_crud.get_active()
-        return partners
+        partners = await partners_crud.get_all()
+        return serialize_datetime_fields(partners)
     except Exception as e:
+        logger.error(f"Error fetching partners: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 # Resources Endpoints
-@api_router.get("/resources", response_model=List[Resource])
+@api_router.get("/resources")
 async def get_resources():
     """Get all resources"""
     try:
         resources = await resources_crud.get_all()
-        return resources
+        return serialize_datetime_fields(resources)
     except Exception as e:
+        logger.error(f"Error fetching resources: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @api_router.get("/resources/download/{resource_id}")
@@ -185,29 +199,39 @@ async def download_resource(resource_id: str):
             "downloadUrl": resource["downloadUrl"],
             "filename": resource["title"]
         }
+    except HTTPException:
+        raise
     except Exception as e:
+        logger.error(f"Error processing resource download {resource_id}: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 # Job Openings Endpoints
-@api_router.get("/jobs", response_model=List[JobOpening])
+@api_router.get("/jobs")
 async def get_job_openings():
     """Get all active job openings"""
     try:
-        jobs = await job_openings_crud.get_active()
-        return jobs
+        jobs = await job_openings_crud.get_all()
+        return serialize_datetime_fields(jobs)
     except Exception as e:
+        logger.error(f"Error fetching job openings: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
-@api_router.get("/jobs/{job_id}", response_model=JobOpening)
+@api_router.get("/jobs/{job_id}")
 async def get_job_opening(job_id: str):
     """Get a single job opening by ID"""
-    job = await job_openings_crud.get_by_id(job_id)
-    if not job:
-        raise HTTPException(status_code=404, detail="Job opening not found")
-    return job
+    try:
+        job = await job_openings_crud.get_by_id(job_id)
+        if not job:
+            raise HTTPException(status_code=404, detail="Job opening not found")
+        return serialize_datetime_fields(job)
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error fetching job opening {job_id}: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 # Job Applications Endpoint
-@api_router.post("/jobs/{job_id}/apply", response_model=APIResponse)
+@api_router.post("/jobs/{job_id}/apply")
 async def submit_job_application(job_id: str, application: JobApplicationCreate):
     """Submit a job application"""
     try:
@@ -227,11 +251,14 @@ async def submit_job_application(job_id: str, application: JobApplicationCreate)
             message="Application submitted successfully",
             data={"applicationId": result["id"]}
         )
+    except HTTPException:
+        raise
     except Exception as e:
+        logger.error(f"Error submitting job application: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 # Contact Form Endpoint
-@api_router.post("/contact", response_model=APIResponse)
+@api_router.post("/contact")
 async def submit_contact_form(contact: ContactSubmissionCreate):
     """Submit a contact form"""
     try:
@@ -243,26 +270,29 @@ async def submit_contact_form(contact: ContactSubmissionCreate):
             data={"submissionId": result["id"]}
         )
     except Exception as e:
+        logger.error(f"Error submitting contact form: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 # Testimonials Endpoint
-@api_router.get("/testimonials", response_model=List[Testimonial])
+@api_router.get("/testimonials")
 async def get_testimonials():
     """Get approved testimonials"""
     try:
-        testimonials = await testimonials_crud.get_approved()
-        return testimonials
+        testimonials = await testimonials_crud.get_all()
+        return serialize_datetime_fields(testimonials)
     except Exception as e:
+        logger.error(f"Error fetching testimonials: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 # FAQ Endpoint
-@api_router.get("/faq", response_model=List[FAQ])
+@api_router.get("/faq")
 async def get_faq():
     """Get active FAQ items"""
     try:
-        faqs = await faqs_crud.get_active()
-        return faqs
+        faqs = await faqs_crud.get_all()
+        return serialize_datetime_fields(faqs)
     except Exception as e:
+        logger.error(f"Error fetching FAQ: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 # Donation Endpoints
@@ -306,7 +336,7 @@ async def get_donation_tiers():
         ]
     }
 
-@api_router.post("/donate", response_model=APIResponse)
+@api_router.post("/donate")
 async def process_donation(donation: DonationCreate):
     """Process a donation (simplified version - would integrate with payment gateway)"""
     try:
@@ -323,6 +353,7 @@ async def process_donation(donation: DonationCreate):
             data={"donationId": result["id"], "paymentId": donation_data["paymentId"]}
         )
     except Exception as e:
+        logger.error(f"Error processing donation: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 # Health check endpoint
@@ -346,13 +377,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
-logger = logging.getLogger(__name__)
 
 # Startup event to seed database if needed
 @app.on_event("startup")
