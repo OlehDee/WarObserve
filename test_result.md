@@ -102,7 +102,158 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Comprehensive testing of War:Observe website at http://localhost:3000 including homepage loading, navigation, content display, interactive forms, user experience, and API integration"
+user_problem_statement: "Мені потрібно протестувати нову функціональність CRUD API для адміністрування War:Observe. Протестуй наступні нові endpoints: GET /api/admin/collections, GET /api/admin/{collection_name}, POST /api/admin/{collection_name}, PUT /api/admin/{collection_name}/{id}, DELETE /api/admin/{collection_name}/{id}, GET /api/admin/{collection_name}/{id} для всіх колекцій (news_articles, team_members, research_projects, partners, resources, job_openings, testimonials, faq, donations). Також перевір що всі системні поля обробляються правильно, API правильно конвертує datetime поля, помилки обробляються коректно, пагінація працює."
+
+backend:
+  - task: "Admin Collections Info Endpoint"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Testing GET /api/admin/collections endpoint to retrieve list of all collections with counts"
+        -working: true
+        -agent: "testing"
+        -comment: "✅ PASSED: GET /api/admin/collections works perfectly. Returns all 9 expected collections (news_articles, team_members, research_projects, partners, resources, job_openings, testimonials, faq, donations) with accurate document counts and proper display names."
+
+  - task: "Admin Collection Data Retrieval"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Testing GET /api/admin/{collection_name} endpoint for all 9 collections with pagination support"
+        -working: true
+        -agent: "testing"
+        -comment: "✅ PASSED: All collection data retrieval endpoints work correctly. Successfully tested all 9 collections, pagination works properly (skip/limit parameters), and returns proper data structure with collection name, data array, total count, skip, and limit values."
+
+  - task: "Admin Item Creation (POST)"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Testing POST /api/admin/{collection_name} endpoint to create new items in all collections"
+        -working: true
+        -agent: "testing"
+        -comment: "✅ PASSED: Item creation works perfectly for all 9 collections. Successfully created realistic test data for each collection type (news articles, team members, research projects, etc.). All items receive proper UUID IDs, system fields (createdAt, updatedAt) are automatically added, and datetime conversion works correctly."
+
+  - task: "Admin Item Retrieval by ID (GET)"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Testing GET /api/admin/{collection_name}/{id} endpoint to retrieve specific items by ID"
+        -working: true
+        -agent: "testing"
+        -comment: "✅ PASSED: Item retrieval by ID works correctly for all collections. Successfully retrieves items using UUID IDs, system fields (id, _id, createdAt, updatedAt) are present and properly formatted, and datetime fields are correctly serialized to ISO format."
+
+  - task: "Admin Item Updates (PUT)"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Testing PUT /api/admin/{collection_name}/{id} endpoint to update existing items"
+        -working: true
+        -agent: "testing"
+        -comment: "✅ PASSED: Item updates work perfectly for all collections. System fields (id, _id, createdAt) are properly protected from updates, updatedAt field is automatically modified on each update, datetime string conversion works correctly, and all collection-specific updates are successful."
+
+  - task: "Admin Item Deletion (DELETE)"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Testing DELETE /api/admin/{collection_name}/{id} endpoint to delete items"
+        -working: true
+        -agent: "testing"
+        -comment: "✅ PASSED: Item deletion works correctly for all collections. Successfully deletes items by UUID ID, returns proper success response, and subsequent GET requests correctly return 404 status confirming deletion."
+
+  - task: "Admin Error Handling"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Testing error scenarios: non-existent collections, non-existent items, invalid operations"
+        -working: true
+        -agent: "testing"
+        -comment: "✅ PASSED: Error handling is robust and correct. Returns proper 404 status codes for non-existent collections and items, handles invalid collection names correctly, and provides appropriate error messages for all failure scenarios."
+
+  - task: "Admin System Fields Management"
+    implemented: true
+    working: true
+    file: "/app/backend/database.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Testing proper handling of system fields (id, _id, createdAt, updatedAt) across all CRUD operations"
+        -working: true
+        -agent: "testing"
+        -comment: "✅ PASSED: System fields are handled perfectly. UUID IDs are properly generated and maintained, createdAt is set on creation and protected from updates, updatedAt is automatically modified on updates, and both id and _id fields are consistently available for compatibility."
+
+  - task: "Admin Datetime Conversion"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Testing automatic conversion of datetime strings to datetime objects and proper JSON serialization"
+        -working: true
+        -agent: "testing"
+        -comment: "✅ PASSED: Datetime conversion works flawlessly. Input datetime strings are properly converted to datetime objects for database storage, output datetime objects are correctly serialized to ISO format strings for JSON responses, and timezone handling works correctly."
+
+  - task: "Admin Pagination Support"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Testing skip and limit parameters for pagination across all collection endpoints"
+        -working: true
+        -agent: "testing"
+        -comment: "✅ PASSED: Pagination works correctly for all collections. Skip and limit parameters are properly handled, returns accurate total counts, and pagination metadata is included in responses. Tested with various skip/limit combinations successfully."
 
 frontend:
   - task: "Homepage Loading and Sections"
