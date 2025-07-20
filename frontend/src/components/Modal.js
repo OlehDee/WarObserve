@@ -220,7 +220,7 @@ const Modal = ({ isOpen, onClose, type, data, onSubmit, formData, setFormData, f
         <div className="modal-meta" style={{ display: 'flex', gap: '16px', margin: '16px 0', fontSize: '14px', color: 'var(--text-muted)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
             <Calendar size={16} />
-            {new Date(data.publishedDate).toLocaleDateString('uk-UA')}
+            {new Date(data.publishedDate).toLocaleDateString('en-US')}
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
             <User size={16} />
