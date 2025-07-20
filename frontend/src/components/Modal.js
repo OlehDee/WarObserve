@@ -200,7 +200,7 @@ const Modal = ({ isOpen, onClose, type, data, onSubmit, formData, setFormData, f
                 cursor: 'pointer'
               }}
             >
-              Скасувати
+              Cancel
             </button>
           </div>
         </form>
