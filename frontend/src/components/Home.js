@@ -166,14 +166,6 @@ const Home = () => {
         setLoading(prev => ({ ...prev, jobs: false }));
       }
 
-      if (testimonialsData.status === 'fulfilled') {
-        setTestimonials(testimonialsData.value);
-        setLoading(prev => ({ ...prev, testimonials: false }));
-      } else {
-        setErrors(prev => ({ ...prev, testimonials: testimonialsData.reason?.message }));
-        setLoading(prev => ({ ...prev, testimonials: false }));
-      }
-
       if (faqDataResponse.status === 'fulfilled') {
         setFaqData(faqDataResponse.value);
         setLoading(prev => ({ ...prev, faq: false }));
