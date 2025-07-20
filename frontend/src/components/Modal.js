@@ -308,12 +308,12 @@ const Modal = ({ isOpen, onClose, type, data, onSubmit, formData, setFormData, f
         <div className="project-dates" style={{ display: 'flex', gap: '24px', margin: '16px 0', fontSize: '14px', color: 'var(--text-muted)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
             <Calendar size={16} />
-            Початок: {new Date(data.startDate).toLocaleDateString('uk-UA')}
+            Started: {new Date(data.startDate).toLocaleDateString('en-US')}
           </div>
           {data.endDate && (
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
               <Target size={16} />
-              Завершення: {new Date(data.endDate).toLocaleDateString('uk-UA')}
+              Completed: {new Date(data.endDate).toLocaleDateString('en-US')}
             </div>
           )}
         </div>
