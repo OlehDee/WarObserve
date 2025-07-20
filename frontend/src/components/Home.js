@@ -870,7 +870,7 @@ const Home = () => {
                   <button 
                     className="btn-primary" 
                     style={{ width: '100%' }}
-                    onClick={() => setApplicationForm({ ...applicationForm, jobId: job.id })}
+                    onClick={() => openJobApplication(job)}
                     disabled={formSubmitting}
                   >
                     Apply Now
