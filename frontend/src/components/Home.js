@@ -313,7 +313,7 @@ const Home = () => {
       // Simulate API delay
       await new Promise(resolve => setTimeout(resolve, 1000));
 
-      alert(`Дякуємо за вашу заявку на позицію "${jobApplicationForm.jobTitle}"! Ми зв'яжемося з вами найближчим часом.`);
+      alert(`Thank you for your application for the "${jobApplicationForm.jobTitle}" position! We will contact you soon.`);
       closeModal();
     } catch (error) {
       alert(`Помилка при відправці заявки: ${error.message}`);
