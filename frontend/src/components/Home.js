@@ -22,7 +22,6 @@ import {
   Send,
   ChevronDown,
   ChevronUp,
-  Star,
   ArrowRight,
   Loader
 } from 'lucide-react';
