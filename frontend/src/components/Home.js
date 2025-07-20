@@ -51,7 +51,6 @@ const Home = () => {
   const [partners, setPartners] = useState([]);
   const [resources, setResources] = useState([]);
   const [jobOpenings, setJobOpenings] = useState([]);
-  const [testimonials, setTestimonials] = useState([]);
   const [faqData, setFaqData] = useState([]);
   const [donationTiers, setDonationTiers] = useState([]);
   
