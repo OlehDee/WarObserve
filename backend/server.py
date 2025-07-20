@@ -455,6 +455,8 @@ async def get_item_by_id(collection_name: str, item_id: str):
             raise HTTPException(status_code=404, detail="Item not found")
         
         return item
+    except HTTPException:
+        raise  # Re-raise HTTPExceptions as-is
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
