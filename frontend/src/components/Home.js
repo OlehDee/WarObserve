@@ -23,8 +23,13 @@ import {
   ChevronDown,
   ChevronUp,
   ArrowRight,
-  Loader
+  Loader,
+  Facebook,
+  Linkedin
 } from 'lucide-react';
+
+// Import components
+import Modal from './Modal';
 
 // Import API services
 import { 
