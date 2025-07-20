@@ -427,6 +427,7 @@ const Modal = ({ isOpen, onClose, type, data, onSubmit, formData, setFormData, f
         }}>
           {type === 'news' && renderNewsContent()}
           {type === 'project' && renderProjectContent()}
+          {type === 'job-application' && renderJobApplicationContent()}
         </div>
       </div>
     </div>
