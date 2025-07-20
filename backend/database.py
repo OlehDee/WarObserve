@@ -3,14 +3,21 @@ from typing import List, Optional, Dict, Any
 import os
 from datetime import datetime
 import logging
+from pathlib import Path
+from dotenv import load_dotenv
+
+# Load environment variables
+ROOT_DIR = Path(__file__).parent
+load_dotenv(ROOT_DIR / '.env')
 
 logger = logging.getLogger(__name__)
 
 class Database:
     def __init__(self):
-        mongo_url = os.environ['MONGO_URL']
+        mongo_url = os.environ.get('MONGO_URL', 'mongodb://localhost:27017')
+        db_name = os.environ.get('DB_NAME', 'test_database')
         self.client = AsyncIOMotorClient(mongo_url)
-        self.db = self.client[os.environ['DB_NAME']]
+        self.db = self.client[db_name]
         
     async def close_connection(self):
         self.client.close()
