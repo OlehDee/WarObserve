@@ -98,7 +98,7 @@ const Modal = ({ isOpen, onClose, type, data, onSubmit, formData, setFormData, f
           
           <div style={{ marginBottom: '16px' }}>
             <label style={{ display: 'block', fontSize: '14px', fontWeight: '600', marginBottom: '6px', color: 'var(--text-primary)' }}>
-              Телефон
+              Phone
             </label>
             <input
               type="tel"
