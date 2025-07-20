@@ -156,7 +156,7 @@ const AdminPanel = () => {
         return (
           <input
             type="text"
-            value={value.join(', ')}
+            value={Array.isArray(value) ? value.join(', ') : ''}
             onChange={(e) => setEditingItem({
               ...editingItem,
               [key]: e.target.value.split(',').map(item => item.trim())
