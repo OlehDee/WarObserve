@@ -13,6 +13,8 @@ import {
   ExternalLink,
   Calendar,
   User,
+  Menu,
+  X,
   Award,
   BookOpen,
   Target,
