@@ -52,14 +52,14 @@ class CRUDBase:
                       filter_dict: dict = None, 
                       skip: int = 0, 
                       limit: int = 100,
-                      sort_by: str = "createdAt",
+                      sort_by: str = "_id",
                       sort_order: int = -1) -> List[dict]:
         """Get all documents with optional filtering and pagination"""
         if filter_dict is None:
             filter_dict = {}
             
-        cursor = self.collection.find(filter_dict)
-        cursor = cursor.sort(sort_by, sort_order).skip(skip).limit(limit)
+        # Simple find without complex sorting first
+        cursor = self.collection.find(filter_dict).skip(skip).limit(limit)
         
         docs = await cursor.to_list(length=limit)
         for doc in docs:
