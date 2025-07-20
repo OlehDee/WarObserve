@@ -617,54 +617,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Testimonials Section */}
-      <section id="testimonials" className="section-padding" style={{ background: 'var(--bg-card)' }}>
-        <div className="section-container">
-          <div style={{ textAlign: 'center', marginBottom: '60px' }}>
-            <h2 className="heading-1">What Experts Say</h2>
-            <p className="body-lg" style={{ marginTop: '16px' }}>
-              Testimonials from professionals who have worked with War:Observe.
-            </p>
-          </div>
-          
-          {loading.testimonials ? (
-            <LoadingSpinner size={32} />
-          ) : errors.testimonials ? (
-            <ErrorMessage message={errors.testimonials} />
-          ) : (
-            <div className="design-grid">
-              {testimonials.map((testimonial) => (
-                <div key={testimonial.id} className="design-card">
-                  <div style={{ display: 'flex', marginBottom: '16px' }}>
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} size={16} fill="var(--brand-orange)" color="var(--brand-orange)" />
-                    ))}
-                  </div>
-                  <p className="body-md" style={{ marginBottom: '24px', fontStyle: 'italic' }}>
-                    "{testimonial.content}"
-                  </p>
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <img 
-                      src={testimonial.avatar} 
-                      alt={testimonial.name}
-                      style={{ width: '48px', height: '48px', borderRadius: '50%', marginRight: '12px' }}
-                    />
-                    <div>
-                      <div style={{ fontWeight: '600', color: 'var(--text-primary)' }}>
-                        {testimonial.name}
-                      </div>
-                      <div style={{ fontSize: '14px', color: 'var(--text-muted)' }}>
-                        {testimonial.position}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      </section>
-
       {/* Resources Section */}
       <section id="resources" className="section-padding">
         <div className="section-container">
