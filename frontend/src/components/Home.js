@@ -313,13 +313,13 @@ const Home = () => {
       <header className="design-header">
         <div className="nav-container">
           <div className="nav-brand">
-            <img 
-              src="https://www.warobserve.com/img/photo/logo.gif" 
-              alt="War:Observe" 
-              className="nav-logo"
-            />
+            <h2 className="nav-logo-text" style={{ color: 'var(--brand-green)', fontWeight: '700', fontSize: '24px' }}>
+              War:OBSERVE
+            </h2>
           </div>
-          <nav className="nav-menu">
+          
+          {/* Desktop Navigation */}
+          <nav className="nav-menu desktop-nav">
             <a href="#about" className="nav-link" onClick={() => scrollToSection('about')}>About</a>
             <a href="#news" className="nav-link" onClick={() => scrollToSection('news')}>News</a>
             <a href="#research" className="nav-link" onClick={() => scrollToSection('research')}>Research</a>
@@ -328,7 +328,91 @@ const Home = () => {
             <a href="#contact" className="nav-link" onClick={() => scrollToSection('contact')}>Contact</a>
             <a href="/admin" className="nav-link" style={{ color: 'var(--brand-green)' }}>Admin</a>
           </nav>
+
+          {/* Mobile Menu Button */}
+          <button 
+            className="mobile-menu-btn"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Toggle menu"
+          >
+            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
         </div>
+
+        {/* Mobile Navigation */}
+        {mobileMenuOpen && (
+          <div className="mobile-nav-overlay">
+            <nav className="mobile-nav">
+              <a 
+                href="#about" 
+                className="mobile-nav-link" 
+                onClick={() => {
+                  scrollToSection('about');
+                  setMobileMenuOpen(false);
+                }}
+              >
+                About
+              </a>
+              <a 
+                href="#news" 
+                className="mobile-nav-link" 
+                onClick={() => {
+                  scrollToSection('news');
+                  setMobileMenuOpen(false);
+                }}
+              >
+                News
+              </a>
+              <a 
+                href="#research" 
+                className="mobile-nav-link" 
+                onClick={() => {
+                  scrollToSection('research');
+                  setMobileMenuOpen(false);
+                }}
+              >
+                Research
+              </a>
+              <a 
+                href="#team" 
+                className="mobile-nav-link" 
+                onClick={() => {
+                  scrollToSection('team');
+                  setMobileMenuOpen(false);
+                }}
+              >
+                Team
+              </a>
+              <a 
+                href="#resources" 
+                className="mobile-nav-link" 
+                onClick={() => {
+                  scrollToSection('resources');
+                  setMobileMenuOpen(false);
+                }}
+              >
+                Resources
+              </a>
+              <a 
+                href="#contact" 
+                className="mobile-nav-link" 
+                onClick={() => {
+                  scrollToSection('contact');
+                  setMobileMenuOpen(false);
+                }}
+              >
+                Contact
+              </a>
+              <a 
+                href="/admin" 
+                className="mobile-nav-link admin-link" 
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Admin
+              </a>
+            </nav>
+          </div>
+        )}
       </header>
 
       {/* Hero Section */}
