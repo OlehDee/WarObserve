@@ -48,7 +48,16 @@ class CRUDBase:
     async def get_by_id(self, doc_id: str) -> Optional[dict]:
         """Get document by ID"""
         # Try both 'id' and '_id' fields for compatibility
-        doc = await self.collection.find_one({"id": doc_id}) or await self.collection.find_one({"_id": doc_id})
+        doc = await self.collection.find_one({"id": doc_id})
+        if not doc:
+            # Try with ObjectId if it looks like one
+            try:
+                from bson import ObjectId
+                if len(doc_id) == 24:  # MongoDB ObjectId length
+                    doc = await self.collection.find_one({"_id": ObjectId(doc_id)})
+            except:
+                pass
+        
         if doc:
             doc['id'] = doc.get('id', str(doc['_id']))
             doc['_id'] = str(doc['_id'])
