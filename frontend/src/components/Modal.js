@@ -1,7 +1,7 @@
 import React from 'react';
-import { X, Calendar, User, Tag, ExternalLink, Users, Target } from 'lucide-react';
+import { X, Calendar, User, Tag, ExternalLink, Users, Target, Send, Loader, Briefcase } from 'lucide-react';
 
-const Modal = ({ isOpen, onClose, type, data }) => {
+const Modal = ({ isOpen, onClose, type, data, onSubmit, formData, setFormData, formSubmitting }) => {
   if (!isOpen || !data) return null;
 
   const handleOverlayClick = (e) => {
@@ -9,6 +9,204 @@ const Modal = ({ isOpen, onClose, type, data }) => {
       onClose();
     }
   };
+
+  const renderJobApplicationContent = () => (
+    <div className="modal-content">
+      <div className="modal-header">
+        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
+          <div style={{ 
+            width: '48px', 
+            height: '48px', 
+            background: 'var(--brand-green)', 
+            borderRadius: '12px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginRight: '16px'
+          }}>
+            <Briefcase size={24} style={{ color: 'white' }} />
+          </div>
+          <div>
+            <h1 className="modal-title" style={{ fontSize: '24px', fontWeight: '700', marginBottom: '4px', color: 'var(--text-primary)' }}>
+              {data.title}
+            </h1>
+            <p style={{ fontSize: '14px', color: 'var(--text-muted)' }}>
+              {data.location} • {data.type}
+            </p>
+          </div>
+        </div>
+        
+        <div className="job-details" style={{ 
+          background: 'var(--bg-subtle)', 
+          padding: '16px', 
+          borderRadius: '8px', 
+          marginBottom: '24px' 
+        }}>
+          <p style={{ fontSize: '14px', color: 'var(--text-secondary)', marginBottom: '12px' }}>
+            {data.description}
+          </p>
+          {data.salary && (
+            <div style={{ fontSize: '14px', color: 'var(--text-muted)' }}>
+              <strong>Зарплата:</strong> {data.salary}
+            </div>
+          )}
+        </div>
+      </div>
+      
+      <div className="modal-body">
+        <form onSubmit={onSubmit} style={{ width: '100%' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '16px', marginBottom: '16px' }}>
+            <div>
+              <label style={{ display: 'block', fontSize: '14px', fontWeight: '600', marginBottom: '6px', color: 'var(--text-primary)' }}>
+                Ім'я *
+              </label>
+              <input
+                type="text"
+                value={formData.name || ''}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                style={{
+                  width: '100%',
+                  padding: '12px',
+                  border: '1px solid var(--border-light)',
+                  borderRadius: '6px',
+                  fontSize: '14px'
+                }}
+                required
+                disabled={formSubmitting}
+              />
+            </div>
+            <div>
+              <label style={{ display: 'block', fontSize: '14px', fontWeight: '600', marginBottom: '6px', color: 'var(--text-primary)' }}>
+                Email *
+              </label>
+              <input
+                type="email"
+                value={formData.email || ''}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                style={{
+                  width: '100%',
+                  padding: '12px',
+                  border: '1px solid var(--border-light)',
+                  borderRadius: '6px',
+                  fontSize: '14px'
+                }}
+                required
+                disabled={formSubmitting}
+              />
+            </div>
+          </div>
+          
+          <div style={{ marginBottom: '16px' }}>
+            <label style={{ display: 'block', fontSize: '14px', fontWeight: '600', marginBottom: '6px', color: 'var(--text-primary)' }}>
+              Телефон
+            </label>
+            <input
+              type="tel"
+              value={formData.phone || ''}
+              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+              style={{
+                width: '100%',
+                padding: '12px',
+                border: '1px solid var(--border-light)',
+                borderRadius: '6px',
+                fontSize: '14px'
+              }}
+              disabled={formSubmitting}
+            />
+          </div>
+          
+          <div style={{ marginBottom: '16px' }}>
+            <label style={{ display: 'block', fontSize: '14px', fontWeight: '600', marginBottom: '6px', color: 'var(--text-primary)' }}>
+              Досвід роботи *
+            </label>
+            <textarea
+              value={formData.experience || ''}
+              onChange={(e) => setFormData({ ...formData, experience: e.target.value })}
+              placeholder="Розкажіть про ваш релевантний досвід..."
+              style={{
+                width: '100%',
+                padding: '12px',
+                border: '1px solid var(--border-light)',
+                borderRadius: '6px',
+                fontSize: '14px',
+                minHeight: '80px',
+                resize: 'vertical'
+              }}
+              required
+              disabled={formSubmitting}
+            />
+          </div>
+          
+          <div style={{ marginBottom: '24px' }}>
+            <label style={{ display: 'block', fontSize: '14px', fontWeight: '600', marginBottom: '6px', color: 'var(--text-primary)' }}>
+              Супровідний лист *
+            </label>
+            <textarea
+              value={formData.coverLetter || ''}
+              onChange={(e) => setFormData({ ...formData, coverLetter: e.target.value })}
+              placeholder="Чому вас цікавить ця позиція?..."
+              style={{
+                width: '100%',
+                padding: '12px',
+                border: '1px solid var(--border-light)',
+                borderRadius: '6px',
+                fontSize: '14px',
+                minHeight: '120px',
+                resize: 'vertical'
+              }}
+              required
+              disabled={formSubmitting}
+            />
+          </div>
+          
+          <div style={{ display: 'flex', gap: '12px' }}>
+            <button
+              type="submit"
+              disabled={formSubmitting}
+              style={{
+                flex: 1,
+                background: 'var(--brand-green)',
+                color: 'white',
+                border: 'none',
+                padding: '12px 20px',
+                borderRadius: '6px',
+                fontSize: '14px',
+                fontWeight: '600',
+                cursor: formSubmitting ? 'not-allowed' : 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                opacity: formSubmitting ? 0.7 : 1
+              }}
+            >
+              {formSubmitting ? (
+                <Loader size={16} className="animate-spin" style={{ marginRight: '8px' }} />
+              ) : (
+                <Send size={16} style={{ marginRight: '8px' }} />
+              )}
+              {formSubmitting ? 'Відправляється...' : 'Надіслати заявку'}
+            </button>
+            <button
+              type="button"
+              onClick={onClose}
+              style={{
+                background: 'var(--bg-subtle)',
+                color: 'var(--text-primary)',
+                border: '1px solid var(--border-light)',
+                padding: '12px 20px',
+                borderRadius: '6px',
+                fontSize: '14px',
+                fontWeight: '500',
+                cursor: 'pointer'
+              }}
+            >
+              Скасувати
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
 
   const renderNewsContent = () => (
     <div className="modal-content">
