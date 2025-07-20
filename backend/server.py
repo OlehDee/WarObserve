@@ -39,7 +39,7 @@ async def root():
     return {"message": "War:Observe API v1.0.0", "status": "active"}
 
 # News Articles Endpoints
-@api_router.get("/news", response_model=List[NewsArticle])
+@api_router.get("/news")
 async def get_news_articles(
     skip: int = Query(0, ge=0),
     limit: int = Query(10, ge=1, le=100),
@@ -51,19 +51,37 @@ async def get_news_articles(
             articles = await news_articles_crud.get_by_category(category, skip, limit)
         else:
             articles = await news_articles_crud.get_published(skip, limit)
+        
+        # Convert datetime objects to strings for JSON serialization
+        for article in articles:
+            for key, value in article.items():
+                if hasattr(value, 'isoformat'):
+                    article[key] = value.isoformat()
         return articles
     except Exception as e:
+        logger.error(f"Error fetching news articles: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
-@api_router.get("/news/{article_id}", response_model=NewsArticle)
+@api_router.get("/news/{article_id}")
 async def get_news_article(article_id: str):
     """Get a single news article by ID"""
-    article = await news_articles_crud.get_by_id(article_id)
-    if not article:
-        raise HTTPException(status_code=404, detail="Article not found")
-    return article
+    try:
+        article = await news_articles_crud.get_by_id(article_id)
+        if not article:
+            raise HTTPException(status_code=404, detail="Article not found")
+        
+        # Convert datetime objects to strings
+        for key, value in article.items():
+            if hasattr(value, 'isoformat'):
+                article[key] = value.isoformat()
+        return article
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error fetching article {article_id}: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
 
-@api_router.get("/news/category/{category}", response_model=List[NewsArticle])
+@api_router.get("/news/category/{category}")
 async def get_news_by_category(
     category: str,
     skip: int = Query(0, ge=0),
@@ -72,8 +90,14 @@ async def get_news_by_category(
     """Get news articles by category"""
     try:
         articles = await news_articles_crud.get_by_category(category, skip, limit)
+        # Convert datetime objects to strings
+        for article in articles:
+            for key, value in article.items():
+                if hasattr(value, 'isoformat'):
+                    article[key] = value.isoformat()
         return articles
     except Exception as e:
+        logger.error(f"Error fetching articles by category {category}: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 # Team Members Endpoints
