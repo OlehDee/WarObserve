@@ -21,20 +21,53 @@ import {
   ChevronDown,
   ChevronUp,
   Star,
-  ArrowRight
+  ArrowRight,
+  Loader
 } from 'lucide-react';
+
+// Import API services
 import { 
-  newsArticles, 
-  teamMembers, 
-  researchProjects, 
-  partners, 
-  resources, 
-  donationTiers, 
-  jobOpenings,
-  testimonials 
-} from '../mock';
+  newsAPI, 
+  teamAPI, 
+  researchAPI, 
+  partnersAPI, 
+  resourcesAPI, 
+  jobsAPI,
+  contactAPI,
+  testimonialsAPI,
+  faqAPI,
+  donationsAPI 
+} from '../services/api';
 
 const Home = () => {
+  // State for API data
+  const [newsArticles, setNewsArticles] = useState([]);
+  const [teamMembers, setTeamMembers] = useState([]);
+  const [researchProjects, setResearchProjects] = useState([]);
+  const [partners, setPartners] = useState([]);
+  const [resources, setResources] = useState([]);
+  const [jobOpenings, setJobOpenings] = useState([]);
+  const [testimonials, setTestimonials] = useState([]);
+  const [faqData, setFaqData] = useState([]);
+  const [donationTiers, setDonationTiers] = useState([]);
+  
+  // Loading states
+  const [loading, setLoading] = useState({
+    news: true,
+    team: true,
+    research: true,
+    partners: true,
+    resources: true,
+    jobs: true,
+    testimonials: true,
+    faq: true,
+    donations: true
+  });
+  
+  // Error states
+  const [errors, setErrors] = useState({});
+  
+  // Form states
   const [activeSection, setActiveSection] = useState('hero');
   const [selectedDonation, setSelectedDonation] = useState(null);
   const [contactForm, setContactForm] = useState({
@@ -52,6 +85,115 @@ const Home = () => {
     coverLetter: ''
   });
   const [expandedFaq, setExpandedFaq] = useState(null);
+  const [formSubmitting, setFormSubmitting] = useState(false);
+
+  // Load data on component mount
+  useEffect(() => {
+    loadAllData();
+  }, []);
+
+  const loadAllData = async () => {
+    try {
+      // Load all data in parallel
+      const [
+        newsData,
+        teamData,
+        researchData,
+        partnersData,
+        resourcesData,
+        jobsData,
+        testimonialsData,
+        faqDataResponse,
+        donationData
+      ] = await Promise.allSettled([
+        newsAPI.getAll(),
+        teamAPI.getAll(),
+        researchAPI.getAll(),
+        partnersAPI.getAll(),
+        resourcesAPI.getAll(),
+        jobsAPI.getAll(),
+        testimonialsAPI.getAll(),
+        faqAPI.getAll(),
+        donationsAPI.getTiers()
+      ]);
+
+      // Handle successful responses
+      if (newsData.status === 'fulfilled') {
+        setNewsArticles(newsData.value);
+        setLoading(prev => ({ ...prev, news: false }));
+      } else {
+        setErrors(prev => ({ ...prev, news: newsData.reason?.message }));
+        setLoading(prev => ({ ...prev, news: false }));
+      }
+
+      if (teamData.status === 'fulfilled') {
+        setTeamMembers(teamData.value);
+        setLoading(prev => ({ ...prev, team: false }));
+      } else {
+        setErrors(prev => ({ ...prev, team: teamData.reason?.message }));
+        setLoading(prev => ({ ...prev, team: false }));
+      }
+
+      if (researchData.status === 'fulfilled') {
+        setResearchProjects(researchData.value);
+        setLoading(prev => ({ ...prev, research: false }));
+      } else {
+        setErrors(prev => ({ ...prev, research: researchData.reason?.message }));
+        setLoading(prev => ({ ...prev, research: false }));
+      }
+
+      if (partnersData.status === 'fulfilled') {
+        setPartners(partnersData.value);
+        setLoading(prev => ({ ...prev, partners: false }));
+      } else {
+        setErrors(prev => ({ ...prev, partners: partnersData.reason?.message }));
+        setLoading(prev => ({ ...prev, partners: false }));
+      }
+
+      if (resourcesData.status === 'fulfilled') {
+        setResources(resourcesData.value);
+        setLoading(prev => ({ ...prev, resources: false }));
+      } else {
+        setErrors(prev => ({ ...prev, resources: resourcesData.reason?.message }));
+        setLoading(prev => ({ ...prev, resources: false }));
+      }
+
+      if (jobsData.status === 'fulfilled') {
+        setJobOpenings(jobsData.value);
+        setLoading(prev => ({ ...prev, jobs: false }));
+      } else {
+        setErrors(prev => ({ ...prev, jobs: jobsData.reason?.message }));
+        setLoading(prev => ({ ...prev, jobs: false }));
+      }
+
+      if (testimonialsData.status === 'fulfilled') {
+        setTestimonials(testimonialsData.value);
+        setLoading(prev => ({ ...prev, testimonials: false }));
+      } else {
+        setErrors(prev => ({ ...prev, testimonials: testimonialsData.reason?.message }));
+        setLoading(prev => ({ ...prev, testimonials: false }));
+      }
+
+      if (faqDataResponse.status === 'fulfilled') {
+        setFaqData(faqDataResponse.value);
+        setLoading(prev => ({ ...prev, faq: false }));
+      } else {
+        setErrors(prev => ({ ...prev, faq: faqDataResponse.reason?.message }));
+        setLoading(prev => ({ ...prev, faq: false }));
+      }
+
+      if (donationData.status === 'fulfilled') {
+        setDonationTiers(donationData.value.tiers || []);
+        setLoading(prev => ({ ...prev, donations: false }));
+      } else {
+        setErrors(prev => ({ ...prev, donations: donationData.reason?.message }));
+        setLoading(prev => ({ ...prev, donations: false }));
+      }
+
+    } catch (error) {
+      console.error('Failed to load data:', error);
+    }
+  };
 
   // Scroll to section functionality
   const scrollToSection = (sectionId) => {
@@ -62,52 +204,103 @@ const Home = () => {
   };
 
   // Handle contact form submission
-  const handleContactSubmit = (e) => {
+  const handleContactSubmit = async (e) => {
     e.preventDefault();
-    console.log('Contact form submitted:', contactForm);
-    alert('Thank you for your message! We will get back to you soon.');
-    setContactForm({ name: '', email: '', subject: '', message: '' });
+    setFormSubmitting(true);
+    
+    try {
+      await contactAPI.submit(contactForm);
+      alert('Thank you for your message! We will get back to you soon.');
+      setContactForm({ name: '', email: '', subject: '', message: '' });
+    } catch (error) {
+      alert(`Failed to send message: ${error.message}`);
+    } finally {
+      setFormSubmitting(false);
+    }
   };
 
   // Handle job application submission
-  const handleApplicationSubmit = (e) => {
+  const handleApplicationSubmit = async (e) => {
     e.preventDefault();
-    console.log('Job application submitted:', applicationForm);
-    alert('Your application has been submitted successfully!');
-    setApplicationForm({
-      jobId: '',
-      name: '',
-      email: '',
-      phone: '',
-      experience: '',
-      coverLetter: ''
-    });
+    setFormSubmitting(true);
+    
+    try {
+      await jobsAPI.apply(applicationForm.jobId, {
+        name: applicationForm.name,
+        email: applicationForm.email,
+        phone: applicationForm.phone,
+        experience: applicationForm.experience,
+        coverLetter: applicationForm.coverLetter
+      });
+      
+      alert('Your application has been submitted successfully!');
+      setApplicationForm({
+        jobId: '',
+        name: '',
+        email: '',
+        phone: '',
+        experience: '',
+        coverLetter: ''
+      });
+    } catch (error) {
+      alert(`Failed to submit application: ${error.message}`);
+    } finally {
+      setFormSubmitting(false);
+    }
   };
 
   // Handle donation selection
-  const handleDonation = (tier) => {
-    console.log('Donation selected:', tier);
-    alert(`Thank you for choosing the ${tier.name} tier! Redirecting to payment...`);
+  const handleDonation = async (tier) => {
+    setFormSubmitting(true);
+    
+    try {
+      const donationData = {
+        donorName: "Anonymous Donor",
+        donorEmail: "donor@example.com",
+        amount: tier.amount,
+        tier: tier.name
+      };
+      
+      const result = await donationsAPI.donate(donationData);
+      alert(`Thank you for choosing the ${tier.name} tier! Donation ID: ${result.data.donationId}`);
+    } catch (error) {
+      alert(`Donation failed: ${error.message}`);
+    } finally {
+      setFormSubmitting(false);
+    }
   };
 
-  const faqData = [
-    {
-      question: "What is War:Observe's primary mission?",
-      answer: "War:Observe is an international analytical and media project supporting young experts, journalists, and opinion leaders who strive to objectively cover armed conflicts, with a particular focus on the war initiated by Russia against Ukraine."
-    },
-    {
-      question: "How can I contribute to your research projects?",
-      answer: "We welcome contributions from researchers, journalists, and subject matter experts. You can apply for our open positions, participate in our internship programs, or collaborate on specific research projects. Contact us at office@warobserve.com to discuss opportunities."
-    },
-    {
-      question: "Do you provide training for young journalists?",
-      answer: "Yes, we offer comprehensive training programs for young journalists and students in international relations. Our programs cover ethical reporting in conflict zones, safety protocols, and analytical methodologies."
-    },
-    {
-      question: "How can my organization partner with War:Observe?",
-      answer: "We collaborate with various organizations including think tanks, media outlets, and international institutions. Partnership opportunities include joint research projects, exchange programs, and shared resources. Please reach out to discuss potential collaborations."
+  // Handle resource download
+  const handleResourceDownload = async (resource) => {
+    try {
+      const result = await resourcesAPI.download(resource.id);
+      // In a real app, this would trigger an actual download
+      alert(`Download started: ${result.filename}`);
+    } catch (error) {
+      alert(`Download failed: ${error.message}`);
     }
-  ];
+  };
+
+  // Loading component
+  const LoadingSpinner = ({ size = 20 }) => (
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+      <Loader size={size} className="animate-spin" style={{ color: 'var(--brand-green)' }} />
+    </div>
+  );
+
+  // Error component
+  const ErrorMessage = ({ message }) => (
+    <div style={{ 
+      padding: '20px', 
+      textAlign: 'center', 
+      color: 'var(--text-muted)',
+      background: 'var(--bg-subtle)',
+      borderRadius: '8px',
+      margin: '20px 0'
+    }}>
+      <p>⚠️ {message}</p>
+    </div>
+  );
 
   return (
     <div className="home">
@@ -214,25 +407,31 @@ const Home = () => {
             </p>
           </div>
           
-          <div className="news-grid">
-            {newsArticles.map((article) => (
-              <article key={article.id} className="news-card">
-                <img src={article.imageUrl} alt={article.title} />
-                <div className="news-card-content">
-                  <div className="news-meta">
-                    <span className="news-category">{article.category}</span>
-                    <span>{new Date(article.publishedDate).toLocaleDateString()}</span>
-                    <span>By {article.author}</span>
+          {loading.news ? (
+            <LoadingSpinner size={32} />
+          ) : errors.news ? (
+            <ErrorMessage message={errors.news} />
+          ) : (
+            <div className="news-grid">
+              {newsArticles.map((article) => (
+                <article key={article.id} className="news-card">
+                  <img src={article.imageUrl} alt={article.title} />
+                  <div className="news-card-content">
+                    <div className="news-meta">
+                      <span className="news-category">{article.category}</span>
+                      <span>{new Date(article.publishedDate).toLocaleDateString()}</span>
+                      <span>By {article.author}</span>
+                    </div>
+                    <h3 className="heading-3" style={{ marginBottom: '12px' }}>{article.title}</h3>
+                    <p className="body-md" style={{ marginBottom: '16px' }}>{article.excerpt}</p>
+                    <button className="btn-secondary" style={{ padding: '12px 20px', minHeight: 'auto' }}>
+                      Read More <ExternalLink size={16} style={{ marginLeft: '8px' }} />
+                    </button>
                   </div>
-                  <h3 className="heading-3" style={{ marginBottom: '12px' }}>{article.title}</h3>
-                  <p className="body-md" style={{ marginBottom: '16px' }}>{article.excerpt}</p>
-                  <button className="btn-secondary" style={{ padding: '12px 20px', minHeight: 'auto' }}>
-                    Read More <ExternalLink size={16} style={{ marginLeft: '8px' }} />
-                  </button>
-                </div>
-              </article>
-            ))}
-          </div>
+                </article>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
@@ -246,38 +445,44 @@ const Home = () => {
             </p>
           </div>
           
-          <div className="design-grid">
-            {researchProjects.map((project) => (
-              <div key={project.id} className="design-card">
-                <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
-                  <div className="card-icon" style={{ width: '48px', height: '48px', marginRight: '16px', marginBottom: '0' }}>
-                    <Search size={20} />
+          {loading.research ? (
+            <LoadingSpinner size={32} />
+          ) : errors.research ? (
+            <ErrorMessage message={errors.research} />
+          ) : (
+            <div className="design-grid">
+              {researchProjects.map((project) => (
+                <div key={project.id} className="design-card">
+                  <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
+                    <div className="card-icon" style={{ width: '48px', height: '48px', marginRight: '16px', marginBottom: '0' }}>
+                      <Search size={20} />
+                    </div>
+                    <span 
+                      className={`badge ${project.status === 'Completed' ? 'badge-success' : 'badge-warning'}`}
+                      style={{
+                        padding: '4px 12px',
+                        borderRadius: '16px',
+                        fontSize: '12px',
+                        fontWeight: '500',
+                        background: project.status === 'Completed' ? 'var(--brand-green)' : 'var(--brand-orange)',
+                        color: 'white'
+                      }}
+                    >
+                      {project.status}
+                    </span>
                   </div>
-                  <span 
-                    className={`badge ${project.status === 'Completed' ? 'badge-success' : 'badge-warning'}`}
-                    style={{
-                      padding: '4px 12px',
-                      borderRadius: '16px',
-                      fontSize: '12px',
-                      fontWeight: '500',
-                      background: project.status === 'Completed' ? 'var(--brand-green)' : 'var(--brand-orange)',
-                      color: 'white'
-                    }}
-                  >
-                    {project.status}
-                  </span>
+                  <h3 className="heading-3" style={{ marginBottom: '12px' }}>{project.title}</h3>
+                  <p className="body-md" style={{ marginBottom: '16px' }}>{project.description}</p>
+                  <div style={{ fontSize: '14px', color: 'var(--text-muted)', marginBottom: '12px' }}>
+                    <strong>Team:</strong> {project.team.join(', ')}
+                  </div>
+                  <div style={{ fontSize: '14px', color: 'var(--text-muted)', marginBottom: '16px' }}>
+                    <strong>Results:</strong> {project.results}
+                  </div>
                 </div>
-                <h3 className="heading-3" style={{ marginBottom: '12px' }}>{project.title}</h3>
-                <p className="body-md" style={{ marginBottom: '16px' }}>{project.description}</p>
-                <div style={{ fontSize: '14px', color: 'var(--text-muted)', marginBottom: '12px' }}>
-                  <strong>Team:</strong> {project.team.join(', ')}
-                </div>
-                <div style={{ fontSize: '14px', color: 'var(--text-muted)', marginBottom: '16px' }}>
-                  <strong>Results:</strong> {project.results}
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
@@ -291,28 +496,34 @@ const Home = () => {
             </p>
           </div>
           
-          <div className="team-grid">
-            {teamMembers.map((member) => (
-              <div key={member.id} className="team-card">
-                <img 
-                  src={member.image} 
-                  alt={member.name}
-                  className="team-avatar"
-                />
-                <h3 className="heading-3" style={{ marginBottom: '8px' }}>{member.name}</h3>
-                <p style={{ color: 'var(--brand-green)', fontWeight: '500', marginBottom: '12px' }}>
-                  {member.position}
-                </p>
-                <p className="body-md" style={{ fontSize: '14px', marginBottom: '16px' }}>
-                  {member.bio}
-                </p>
-                <a href={`mailto:${member.email}`} className="btn-secondary" style={{ padding: '8px 16px', minHeight: 'auto' }}>
-                  <Mail size={14} style={{ marginRight: '6px' }} />
-                  Contact
-                </a>
-              </div>
-            ))}
-          </div>
+          {loading.team ? (
+            <LoadingSpinner size={32} />
+          ) : errors.team ? (
+            <ErrorMessage message={errors.team} />
+          ) : (
+            <div className="team-grid">
+              {teamMembers.map((member) => (
+                <div key={member.id} className="team-card">
+                  <img 
+                    src={member.image} 
+                    alt={member.name}
+                    className="team-avatar"
+                  />
+                  <h3 className="heading-3" style={{ marginBottom: '8px' }}>{member.name}</h3>
+                  <p style={{ color: 'var(--brand-green)', fontWeight: '500', marginBottom: '12px' }}>
+                    {member.position}
+                  </p>
+                  <p className="body-md" style={{ fontSize: '14px', marginBottom: '16px' }}>
+                    {member.bio}
+                  </p>
+                  <a href={`mailto:${member.email}`} className="btn-secondary" style={{ padding: '8px 16px', minHeight: 'auto' }}>
+                    <Mail size={14} style={{ marginRight: '6px' }} />
+                    Contact
+                  </a>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
@@ -326,35 +537,41 @@ const Home = () => {
             </p>
           </div>
           
-          <div className="design-grid">
-            {testimonials.map((testimonial) => (
-              <div key={testimonial.id} className="design-card">
-                <div style={{ display: 'flex', marginBottom: '16px' }}>
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} size={16} fill="var(--brand-orange)" color="var(--brand-orange)" />
-                  ))}
-                </div>
-                <p className="body-md" style={{ marginBottom: '24px', fontStyle: 'italic' }}>
-                  "{testimonial.content}"
-                </p>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <img 
-                    src={testimonial.avatar} 
-                    alt={testimonial.name}
-                    style={{ width: '48px', height: '48px', borderRadius: '50%', marginRight: '12px' }}
-                  />
-                  <div>
-                    <div style={{ fontWeight: '600', color: 'var(--text-primary)' }}>
-                      {testimonial.name}
-                    </div>
-                    <div style={{ fontSize: '14px', color: 'var(--text-muted)' }}>
-                      {testimonial.position}
+          {loading.testimonials ? (
+            <LoadingSpinner size={32} />
+          ) : errors.testimonials ? (
+            <ErrorMessage message={errors.testimonials} />
+          ) : (
+            <div className="design-grid">
+              {testimonials.map((testimonial) => (
+                <div key={testimonial.id} className="design-card">
+                  <div style={{ display: 'flex', marginBottom: '16px' }}>
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} size={16} fill="var(--brand-orange)" color="var(--brand-orange)" />
+                    ))}
+                  </div>
+                  <p className="body-md" style={{ marginBottom: '24px', fontStyle: 'italic' }}>
+                    "{testimonial.content}"
+                  </p>
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <img 
+                      src={testimonial.avatar} 
+                      alt={testimonial.name}
+                      style={{ width: '48px', height: '48px', borderRadius: '50%', marginRight: '12px' }}
+                    />
+                    <div>
+                      <div style={{ fontWeight: '600', color: 'var(--text-primary)' }}>
+                        {testimonial.name}
+                      </div>
+                      <div style={{ fontSize: '14px', color: 'var(--text-muted)' }}>
+                        {testimonial.position}
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
@@ -368,29 +585,39 @@ const Home = () => {
             </p>
           </div>
           
-          <div className="design-grid">
-            {resources.map((resource) => (
-              <div key={resource.id} className="design-card">
-                <div className="card-icon">
-                  <Download size={24} />
+          {loading.resources ? (
+            <LoadingSpinner size={32} />
+          ) : errors.resources ? (
+            <ErrorMessage message={errors.resources} />
+          ) : (
+            <div className="design-grid">
+              {resources.map((resource) => (
+                <div key={resource.id} className="design-card">
+                  <div className="card-icon">
+                    <Download size={24} />
+                  </div>
+                  <h3 className="heading-3" style={{ marginBottom: '12px' }}>{resource.title}</h3>
+                  <p className="body-md" style={{ marginBottom: '16px' }}>{resource.description}</p>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                    <span style={{ fontSize: '14px', color: 'var(--text-muted)' }}>
+                      {resource.type} • {resource.fileType}
+                    </span>
+                    <span style={{ fontSize: '14px', color: 'var(--text-muted)' }}>
+                      {new Date(resource.publishedDate).toLocaleDateString()}
+                    </span>
+                  </div>
+                  <button 
+                    className="btn-primary" 
+                    style={{ width: '100%' }}
+                    onClick={() => handleResourceDownload(resource)}
+                  >
+                    <Download size={16} style={{ marginRight: '8px' }} />
+                    Download
+                  </button>
                 </div>
-                <h3 className="heading-3" style={{ marginBottom: '12px' }}>{resource.title}</h3>
-                <p className="body-md" style={{ marginBottom: '16px' }}>{resource.description}</p>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-                  <span style={{ fontSize: '14px', color: 'var(--text-muted)' }}>
-                    {resource.type} • {resource.fileType}
-                  </span>
-                  <span style={{ fontSize: '14px', color: 'var(--text-muted)' }}>
-                    {new Date(resource.publishedDate).toLocaleDateString()}
-                  </span>
-                </div>
-                <button className="btn-primary" style={{ width: '100%' }}>
-                  <Download size={16} style={{ marginRight: '8px' }} />
-                  Download
-                </button>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
@@ -404,22 +631,28 @@ const Home = () => {
             </p>
           </div>
           
-          <div className="design-grid">
-            {partners.map((partner) => (
-              <div key={partner.id} className="design-card">
-                <img 
-                  src={partner.logo} 
-                  alt={partner.name}
-                  style={{ width: '100%', height: '120px', objectFit: 'cover', borderRadius: '8px', marginBottom: '16px' }}
-                />
-                <h3 className="heading-3" style={{ marginBottom: '12px' }}>{partner.name}</h3>
-                <p className="body-md" style={{ marginBottom: '16px' }}>{partner.description}</p>
-                <a href={partner.website} className="btn-secondary" style={{ padding: '8px 16px', minHeight: 'auto' }}>
-                  Visit Website <ExternalLink size={14} style={{ marginLeft: '6px' }} />
-                </a>
-              </div>
-            ))}
-          </div>
+          {loading.partners ? (
+            <LoadingSpinner size={32} />
+          ) : errors.partners ? (
+            <ErrorMessage message={errors.partners} />
+          ) : (
+            <div className="design-grid">
+              {partners.map((partner) => (
+                <div key={partner.id} className="design-card">
+                  <img 
+                    src={partner.logo} 
+                    alt={partner.name}
+                    style={{ width: '100%', height: '120px', objectFit: 'cover', borderRadius: '8px', marginBottom: '16px' }}
+                  />
+                  <h3 className="heading-3" style={{ marginBottom: '12px' }}>{partner.name}</h3>
+                  <p className="body-md" style={{ marginBottom: '16px' }}>{partner.description}</p>
+                  <a href={partner.website} className="btn-secondary" style={{ padding: '8px 16px', minHeight: 'auto' }}>
+                    Visit Website <ExternalLink size={14} style={{ marginLeft: '6px' }} />
+                  </a>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
@@ -433,39 +666,46 @@ const Home = () => {
             </p>
           </div>
           
-          <div className="design-grid">
-            {donationTiers.map((tier) => (
-              <div key={tier.id} className="design-card">
-                <div className="card-icon">
-                  <Heart size={24} />
+          {loading.donations ? (
+            <LoadingSpinner size={32} />
+          ) : errors.donations ? (
+            <ErrorMessage message={errors.donations} />
+          ) : (
+            <div className="design-grid">
+              {donationTiers.map((tier) => (
+                <div key={tier.id} className="design-card">
+                  <div className="card-icon">
+                    <Heart size={24} />
+                  </div>
+                  <h3 className="heading-3" style={{ marginBottom: '8px' }}>{tier.name}</h3>
+                  <div style={{ fontSize: '32px', fontWeight: '600', color: 'var(--brand-green)', marginBottom: '12px' }}>
+                    €{tier.amount}
+                  </div>
+                  <p className="body-md" style={{ marginBottom: '16px' }}>{tier.description}</p>
+                  <ul style={{ listStyle: 'none', marginBottom: '24px' }}>
+                    {tier.benefits.map((benefit, index) => (
+                      <li key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
+                        <div style={{ width: '6px', height: '6px', background: 'var(--brand-green)', borderRadius: '50%', marginRight: '8px' }}></div>
+                        {benefit}
+                      </li>
+                    ))}
+                  </ul>
+                  <button 
+                    className="btn-primary" 
+                    style={{ width: '100%' }}
+                    onClick={() => handleDonation(tier)}
+                    disabled={formSubmitting}
+                  >
+                    {formSubmitting ? <Loader size={16} className="animate-spin" /> : `Choose ${tier.name}`}
+                  </button>
                 </div>
-                <h3 className="heading-3" style={{ marginBottom: '8px' }}>{tier.name}</h3>
-                <div style={{ fontSize: '32px', fontWeight: '600', color: 'var(--brand-green)', marginBottom: '12px' }}>
-                  €{tier.amount}
-                </div>
-                <p className="body-md" style={{ marginBottom: '16px' }}>{tier.description}</p>
-                <ul style={{ listStyle: 'none', marginBottom: '24px' }}>
-                  {tier.benefits.map((benefit, index) => (
-                    <li key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
-                      <div style={{ width: '6px', height: '6px', background: 'var(--brand-green)', borderRadius: '50%', marginRight: '8px' }}></div>
-                      {benefit}
-                    </li>
-                  ))}
-                </ul>
-                <button 
-                  className="btn-primary" 
-                  style={{ width: '100%' }}
-                  onClick={() => handleDonation(tier)}
-                >
-                  Choose {tier.name}
-                </button>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
-      {/* Join Us Section */}
+      {/* Job Openings Section */}
       <section id="join" className="section-padding" style={{ background: 'var(--bg-card)' }}>
         <div className="section-container">
           <div style={{ textAlign: 'center', marginBottom: '60px' }}>
@@ -475,35 +715,42 @@ const Home = () => {
             </p>
           </div>
           
-          <div className="design-grid">
-            {jobOpenings.map((job) => (
-              <div key={job.id} className="design-card">
-                <div className="card-icon">
-                  <Briefcase size={24} />
+          {loading.jobs ? (
+            <LoadingSpinner size={32} />
+          ) : errors.jobs ? (
+            <ErrorMessage message={errors.jobs} />
+          ) : (
+            <div className="design-grid">
+              {jobOpenings.map((job) => (
+                <div key={job.id} className="design-card">
+                  <div className="card-icon">
+                    <Briefcase size={24} />
+                  </div>
+                  <h3 className="heading-3" style={{ marginBottom: '8px' }}>{job.title}</h3>
+                  <div style={{ fontSize: '14px', color: 'var(--text-muted)', marginBottom: '12px' }}>
+                    {job.department} • {job.location} • {job.type}
+                  </div>
+                  <p className="body-md" style={{ marginBottom: '16px' }}>{job.description}</p>
+                  <div style={{ marginBottom: '16px' }}>
+                    <strong style={{ fontSize: '14px' }}>Requirements:</strong>
+                    <ul style={{ fontSize: '14px', marginTop: '8px', paddingLeft: '20px' }}>
+                      {job.requirements.slice(0, 2).map((req, index) => (
+                        <li key={index}>{req}</li>
+                      ))}
+                    </ul>
+                  </div>
+                  <button 
+                    className="btn-primary" 
+                    style={{ width: '100%' }}
+                    onClick={() => setApplicationForm({ ...applicationForm, jobId: job.id })}
+                    disabled={formSubmitting}
+                  >
+                    Apply Now
+                  </button>
                 </div>
-                <h3 className="heading-3" style={{ marginBottom: '8px' }}>{job.title}</h3>
-                <div style={{ fontSize: '14px', color: 'var(--text-muted)', marginBottom: '12px' }}>
-                  {job.department} • {job.location} • {job.type}
-                </div>
-                <p className="body-md" style={{ marginBottom: '16px' }}>{job.description}</p>
-                <div style={{ marginBottom: '16px' }}>
-                  <strong style={{ fontSize: '14px' }}>Requirements:</strong>
-                  <ul style={{ fontSize: '14px', marginTop: '8px', paddingLeft: '20px' }}>
-                    {job.requirements.slice(0, 2).map((req, index) => (
-                      <li key={index}>{req}</li>
-                    ))}
-                  </ul>
-                </div>
-                <button 
-                  className="btn-primary" 
-                  style={{ width: '100%' }}
-                  onClick={() => setApplicationForm({ ...applicationForm, jobId: job.id })}
-                >
-                  Apply Now
-                </button>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
           
           {/* Job Application Form */}
           {applicationForm.jobId && (
@@ -520,6 +767,7 @@ const Home = () => {
                     value={applicationForm.name}
                     onChange={(e) => setApplicationForm({ ...applicationForm, name: e.target.value })}
                     required
+                    disabled={formSubmitting}
                   />
                 </div>
                 <div className="form-group">
@@ -530,6 +778,7 @@ const Home = () => {
                     value={applicationForm.email}
                     onChange={(e) => setApplicationForm({ ...applicationForm, email: e.target.value })}
                     required
+                    disabled={formSubmitting}
                   />
                 </div>
                 <div className="form-group">
@@ -539,6 +788,7 @@ const Home = () => {
                     className="form-input"
                     value={applicationForm.phone}
                     onChange={(e) => setApplicationForm({ ...applicationForm, phone: e.target.value })}
+                    disabled={formSubmitting}
                   />
                 </div>
                 <div className="form-group">
@@ -549,6 +799,7 @@ const Home = () => {
                     value={applicationForm.experience}
                     onChange={(e) => setApplicationForm({ ...applicationForm, experience: e.target.value })}
                     required
+                    disabled={formSubmitting}
                   />
                 </div>
                 <div className="form-group">
@@ -559,18 +810,20 @@ const Home = () => {
                     onChange={(e) => setApplicationForm({ ...applicationForm, coverLetter: e.target.value })}
                     placeholder="Tell us why you're interested in this position..."
                     required
+                    disabled={formSubmitting}
                   />
                 </div>
                 <div style={{ display: 'flex', gap: '16px' }}>
-                  <button type="submit" className="btn-primary" style={{ flex: 1 }}>
-                    <Send size={16} style={{ marginRight: '8px' }} />
-                    Submit Application
+                  <button type="submit" className="btn-primary" style={{ flex: 1 }} disabled={formSubmitting}>
+                    {formSubmitting ? <Loader size={16} className="animate-spin" /> : <Send size={16} style={{ marginRight: '8px' }} />}
+                    {formSubmitting ? 'Submitting...' : 'Submit Application'}
                   </button>
                   <button 
                     type="button" 
                     className="btn-secondary"
                     onClick={() => setApplicationForm({ jobId: '', name: '', email: '', phone: '', experience: '', coverLetter: '' })}
                     style={{ flex: 1 }}
+                    disabled={formSubmitting}
                   >
                     Cancel
                   </button>
@@ -591,33 +844,39 @@ const Home = () => {
             </p>
           </div>
           
-          <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-            {faqData.map((faq, index) => (
-              <div key={index} className="design-card" style={{ marginBottom: '16px' }}>
-                <button
-                  style={{
-                    width: '100%',
-                    padding: '0',
-                    border: 'none',
-                    background: 'transparent',
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    cursor: 'pointer'
-                  }}
-                  onClick={() => setExpandedFaq(expandedFaq === index ? null : index)}
-                >
-                  <h3 className="heading-3" style={{ textAlign: 'left' }}>{faq.question}</h3>
-                  {expandedFaq === index ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
-                </button>
-                {expandedFaq === index && (
-                  <p className="body-md" style={{ marginTop: '16px', paddingTop: '16px', borderTop: '1px solid var(--border-light)' }}>
-                    {faq.answer}
-                  </p>
-                )}
-              </div>
-            ))}
-          </div>
+          {loading.faq ? (
+            <LoadingSpinner size={32} />
+          ) : errors.faq ? (
+            <ErrorMessage message={errors.faq} />
+          ) : (
+            <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+              {faqData.map((faq, index) => (
+                <div key={faq.id} className="design-card" style={{ marginBottom: '16px' }}>
+                  <button
+                    style={{
+                      width: '100%',
+                      padding: '0',
+                      border: 'none',
+                      background: 'transparent',
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      cursor: 'pointer'
+                    }}
+                    onClick={() => setExpandedFaq(expandedFaq === index ? null : index)}
+                  >
+                    <h3 className="heading-3" style={{ textAlign: 'left' }}>{faq.question}</h3>
+                    {expandedFaq === index ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
+                  </button>
+                  {expandedFaq === index && (
+                    <p className="body-md" style={{ marginTop: '16px', paddingTop: '16px', borderTop: '1px solid var(--border-light)' }}>
+                      {faq.answer}
+                    </p>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
@@ -641,6 +900,7 @@ const Home = () => {
                   value={contactForm.name}
                   onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })}
                   required
+                  disabled={formSubmitting}
                 />
               </div>
               <div className="form-group">
@@ -651,6 +911,7 @@ const Home = () => {
                   value={contactForm.email}
                   onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
                   required
+                  disabled={formSubmitting}
                 />
               </div>
             </div>
@@ -662,6 +923,7 @@ const Home = () => {
                 value={contactForm.subject}
                 onChange={(e) => setContactForm({ ...contactForm, subject: e.target.value })}
                 required
+                disabled={formSubmitting}
               />
             </div>
             <div className="form-group">
@@ -672,11 +934,12 @@ const Home = () => {
                 onChange={(e) => setContactForm({ ...contactForm, message: e.target.value })}
                 placeholder="Tell us how we can help you..."
                 required
+                disabled={formSubmitting}
               />
             </div>
-            <button type="submit" className="btn-primary" style={{ width: '100%' }}>
-              <Send size={16} style={{ marginRight: '8px' }} />
-              Send Message
+            <button type="submit" className="btn-primary" style={{ width: '100%' }} disabled={formSubmitting}>
+              {formSubmitting ? <Loader size={16} className="animate-spin" /> : <Send size={16} style={{ marginRight: '8px' }} />}
+              {formSubmitting ? 'Sending...' : 'Send Message'}
             </button>
           </form>
         </div>
