@@ -582,6 +582,14 @@ const Home = () => {
                   <div style={{ fontSize: '14px', color: 'var(--text-muted)', marginBottom: '16px' }}>
                     <strong>Results:</strong> {project.results}
                   </div>
+                  <button 
+                    className="btn-secondary" 
+                    style={{ padding: '10px 16px', minHeight: 'auto', width: '100%' }}
+                    onClick={() => openModal('project', project)}
+                  >
+                    <FileText size={16} style={{ marginRight: '8px' }} />
+                    Деталі проекту
+                  </button>
                 </div>
               ))}
             </div>
