@@ -101,3 +101,111 @@
 #====================================================================================================
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
+
+user_problem_statement: "Comprehensive testing of War:Observe website at http://localhost:3000 including homepage loading, navigation, content display, interactive forms, user experience, and API integration"
+
+frontend:
+  - task: "Homepage Loading and Sections"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/Home.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Initial testing setup - need to verify all sections load properly (hero, about, news, research, team, resources, partners, donations, jobs, FAQ, contact)"
+
+  - task: "Navigation and Smooth Scrolling"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/Home.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Need to test smooth scrolling navigation between sections using header menu"
+
+  - task: "Content Display and API Integration"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/Home.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Need to verify news articles, research projects, team members, resources, partners, FAQ, and testimonials display properly with data from backend API"
+
+  - task: "Contact Form Functionality"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/Home.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Need to test contact form submission with all fields filled out"
+
+  - task: "Job Application Process"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/Home.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Need to test job application flow - clicking Apply Now and filling out application form"
+
+  - task: "Donation System"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/Home.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Need to test donation system by clicking on different donation tiers"
+
+  - task: "User Experience Elements"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/Home.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Need to check loading states, error handling, button hover effects, form validation, responsive design, and visual consistency"
+
+metadata:
+  created_by: "testing_agent"
+  version: "1.0"
+  test_sequence: 1
+
+test_plan:
+  current_focus:
+    - "Homepage Loading and Sections"
+    - "Navigation and Smooth Scrolling"
+    - "Content Display and API Integration"
+    - "Contact Form Functionality"
+    - "Job Application Process"
+    - "Donation System"
+  stuck_tasks: []
+  test_all: true
+  test_priority: "high_first"
+
+agent_communication:
+    -agent: "testing"
+    -message: "Starting comprehensive testing of War:Observe website. Will test all main features including homepage loading, navigation, content display, interactive forms, and API integration as requested in the review."
