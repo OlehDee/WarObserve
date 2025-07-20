@@ -206,7 +206,7 @@ const AdminPanel = () => {
       if (typeof value === 'boolean') {
         return <span className={value ? 'text-green-600' : 'text-red-600'}>{value ? 'Yes' : 'No'}</span>;
       } else if (Array.isArray(value)) {
-        return <span className="text-blue-600">[{value.join(', ')}]</span>;
+        return <span className="text-blue-600">[{value ? value.join(', ') : ''}]</span>;
       } else if (key.includes('Date') || key.includes('At')) {
         return <span className="text-gray-600">{value ? new Date(value).toLocaleDateString() : 'N/A'}</span>;
       } else if (key.includes('Url') || key.includes('image')) {
