@@ -615,7 +615,7 @@ const Home = () => {
                     onClick={() => openModal('project', project)}
                   >
                     <FileText size={16} style={{ marginRight: '8px' }} />
-                    Деталі проекту
+                    Project Details
                   </button>
                 </div>
               ))}
