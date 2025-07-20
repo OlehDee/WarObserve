@@ -523,8 +523,12 @@ const Home = () => {
                     </div>
                     <h3 className="heading-3" style={{ marginBottom: '12px' }}>{article.title}</h3>
                     <p className="body-md" style={{ marginBottom: '16px' }}>{article.excerpt}</p>
-                    <button className="btn-secondary" style={{ padding: '12px 20px', minHeight: 'auto' }}>
-                      Read More <ExternalLink size={16} style={{ marginLeft: '8px' }} />
+                    <button 
+                      className="btn-secondary" 
+                      style={{ padding: '12px 20px', minHeight: 'auto' }}
+                      onClick={() => openModal('news', article)}
+                    >
+                      Читати далі <ExternalLink size={16} style={{ marginLeft: '8px' }} />
                     </button>
                   </div>
                 </article>
