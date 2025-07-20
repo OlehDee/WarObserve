@@ -36,7 +36,6 @@ import {
   resourcesAPI, 
   jobsAPI,
   contactAPI,
-  testimonialsAPI,
   faqAPI,
   donationsAPI 
 } from '../services/api';
