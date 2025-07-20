@@ -313,7 +313,7 @@ const Home = () => {
       <header className="design-header">
         <div className="nav-container">
           <div className="nav-brand">
-            <h2 className="nav-logo-text" style={{ color: 'var(--brand-green)', fontWeight: '700', fontSize: '24px' }}>
+            <h2 className="nav-logo-text" style={{ color: 'var(--text-primary)', fontWeight: '700', fontSize: '24px' }}>
               War:OBSERVE
             </h2>
           </div>
