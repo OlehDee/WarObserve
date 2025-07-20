@@ -550,3 +550,123 @@ body {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Mobile Navigation Styles */
+.mobile-menu-btn {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+}
+
+.mobile-menu-btn:hover {
+  background-color: var(--bg-subtle);
+}
+
+.desktop-nav {
+  display: flex;
+}
+
+.mobile-nav-overlay {
+  position: fixed;
+  top: 88px; /* Adjusted for header height */
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 99;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.mobile-nav {
+  background: var(--bg-card);
+  border-radius: 0 0 16px 16px;
+  box-shadow: var(--shadow-lg);
+  padding: 24px 0;
+  margin: 0 16px;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from { 
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.mobile-nav-link {
+  display: block;
+  padding: 16px 24px;
+  color: var(--text-primary);
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 500;
+  border-bottom: 1px solid var(--border-light);
+  transition: all 0.2s ease;
+}
+
+.mobile-nav-link:last-child {
+  border-bottom: none;
+}
+
+.mobile-nav-link:hover,
+.mobile-nav-link:active {
+  background-color: var(--bg-subtle);
+  color: var(--brand-green);
+}
+
+.mobile-nav-link.admin-link {
+  color: var(--brand-green);
+  font-weight: 600;
+}
+
+/* Tablet Styles */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .nav-container {
+    padding: 0 20px;
+  }
+  
+  .nav-menu {
+    gap: 24px;
+  }
+  
+  .nav-link {
+    font-size: 15px;
+  }
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+  .mobile-menu-btn {
+    display: block;
+  }
+  
+  .desktop-nav {
+    display: none;
+  }
+  
+  .nav-container {
+    padding: 0 16px;
+  }
+  
+  .nav-logo-text {
+    font-size: 20px !important;
+  }
+  
+  .design-header {
+    padding: 16px 0;
+  }
+}
