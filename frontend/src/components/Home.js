@@ -1017,9 +1017,79 @@ const Home = () => {
               <p style={{ marginBottom: '20px', color: 'rgba(255, 255, 255, 0.8)' }}>
                 Supporting objective conflict coverage and expert collaboration worldwide.
               </p>
-              <div style={{ display: 'flex', alignItems: 'center', marginBottom: '12px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
                 <Mail size={16} style={{ marginRight: '8px' }} />
                 <span>office@warobserve.com</span>
+              </div>
+              
+              <div style={{ marginBottom: '12px' }}>
+                <p style={{ fontSize: '14px', marginBottom: '8px', color: 'rgba(255, 255, 255, 0.9)' }}>
+                  Слідкуйте за нами:
+                </p>
+                <div style={{ display: 'flex', gap: '12px' }}>
+                  <a 
+                    href="https://www.facebook.com/profile.php?id=61566060963426"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ 
+                      color: 'rgba(255, 255, 255, 0.8)',
+                      transition: 'color 0.2s ease',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      width: '36px',
+                      height: '36px',
+                      borderRadius: '8px',
+                      background: 'rgba(255, 255, 255, 0.1)'
+                    }}
+                    onMouseOver={(e) => e.target.closest('a').style.color = '#1877f2'}
+                    onMouseOut={(e) => e.target.closest('a').style.color = 'rgba(255, 255, 255, 0.8)'}
+                  >
+                    <Facebook size={18} />
+                  </a>
+                  <a 
+                    href="https://www.linkedin.com/company/war-observe/?viewAsMember=true"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ 
+                      color: 'rgba(255, 255, 255, 0.8)',
+                      transition: 'color 0.2s ease',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      width: '36px',
+                      height: '36px',
+                      borderRadius: '8px',
+                      background: 'rgba(255, 255, 255, 0.1)'
+                    }}
+                    onMouseOver={(e) => e.target.closest('a').style.color = '#0a66c2'}
+                    onMouseOut={(e) => e.target.closest('a').style.color = 'rgba(255, 255, 255, 0.8)'}
+                  >
+                    <Linkedin size={18} />
+                  </a>
+                  <a 
+                    href="https://t.me/warobserve2022"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ 
+                      color: 'rgba(255, 255, 255, 0.8)',
+                      transition: 'color 0.2s ease',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      width: '36px',
+                      height: '36px',
+                      borderRadius: '8px',
+                      background: 'rgba(255, 255, 255, 0.1)',
+                      fontSize: '16px',
+                      fontWeight: '600'
+                    }}
+                    onMouseOver={(e) => e.target.closest('a').style.color = '#26a5e4'}
+                    onMouseOut={(e) => e.target.closest('a').style.color = 'rgba(255, 255, 255, 0.8)'}
+                  >
+                    TG
+                  </a>
+                </div>
               </div>
             </div>
             
