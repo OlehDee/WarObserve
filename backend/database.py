@@ -35,6 +35,12 @@ class CRUDBase:
         """Create a new document"""
         data['createdAt'] = datetime.utcnow()
         data['updatedAt'] = datetime.utcnow()
+        
+        # Ensure we have an 'id' field - use existing or generate UUID
+        if 'id' not in data:
+            import uuid
+            data['id'] = str(uuid.uuid4())
+        
         result = await self.collection.insert_one(data)
         data['_id'] = str(result.inserted_id)
         return data
