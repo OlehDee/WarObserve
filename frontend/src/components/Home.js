@@ -475,7 +475,7 @@ const Home = () => {
                   <h3 className="heading-3" style={{ marginBottom: '12px' }}>{project.title}</h3>
                   <p className="body-md" style={{ marginBottom: '16px' }}>{project.description}</p>
                   <div style={{ fontSize: '14px', color: 'var(--text-muted)', marginBottom: '12px' }}>
-                    <strong>Team:</strong> {project.team.join(', ')}
+                    <strong>Team:</strong> {project.team && Array.isArray(project.team) ? project.team.join(', ') : 'Not specified'}
                   </div>
                   <div style={{ fontSize: '14px', color: 'var(--text-muted)', marginBottom: '16px' }}>
                     <strong>Results:</strong> {project.results}
