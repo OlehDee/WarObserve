@@ -555,7 +555,7 @@ const Home = () => {
                       style={{ padding: '12px 20px', minHeight: 'auto' }}
                       onClick={() => openModal('news', article)}
                     >
-                      Читати далі <ExternalLink size={16} style={{ marginLeft: '8px' }} />
+                      Read More <ExternalLink size={16} style={{ marginLeft: '8px' }} />
                     </button>
                   </div>
                 </article>
