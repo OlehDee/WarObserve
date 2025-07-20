@@ -583,6 +583,8 @@ async def create_item(collection_name: str, item_data: dict):
             message="Item created successfully",
             data=new_item
         )
+    except HTTPException:
+        raise  # Re-raise HTTPExceptions as-is
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
