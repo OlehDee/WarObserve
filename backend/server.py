@@ -77,13 +77,19 @@ async def get_news_by_category(
         raise HTTPException(status_code=500, detail=str(e))
 
 # Team Members Endpoints
-@api_router.get("/team", response_model=List[TeamMember])
+@api_router.get("/team")
 async def get_team_members():
     """Get all active team members"""
     try:
-        members = await team_members_crud.get_active()
+        members = await team_members_crud.get_all()
+        # Convert datetime objects to strings for JSON serialization
+        for member in members:
+            for key, value in member.items():
+                if hasattr(value, 'isoformat'):
+                    member[key] = value.isoformat()
         return members
     except Exception as e:
+        logger.error(f"Error fetching team members: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @api_router.get("/team/{member_id}", response_model=TeamMember)
