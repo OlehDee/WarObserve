@@ -246,7 +246,7 @@ const Modal = ({ isOpen, onClose, type, data, onSubmit, formData, setFormData, f
         
         {data.tags && data.tags.length > 0 && (
           <div className="modal-tags" style={{ marginTop: '24px', paddingTop: '24px', borderTop: '1px solid var(--border-light)' }}>
-            <h4 style={{ fontSize: '14px', fontWeight: '600', marginBottom: '12px', color: 'var(--text-primary)' }}>Теги:</h4>
+            <h4 style={{ fontSize: '14px', fontWeight: '600', marginBottom: '12px', color: 'var(--text-primary)' }}>Tags:</h4>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
               {data.tags.map((tag, index) => (
                 <span 
