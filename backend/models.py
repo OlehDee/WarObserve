@@ -268,7 +268,7 @@ class Donation(BaseModel):
     status: DonationStatus = DonationStatus.PENDING
     donatedAt: datetime = Field(default_factory=datetime.utcnow)
 
-    @validator('email')
+    @validator('donorEmail')
     def validate_email(cls, v):
         import re
         pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
