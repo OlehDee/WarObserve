@@ -113,7 +113,6 @@ const Home = () => {
         partnersAPI.getAll(),
         resourcesAPI.getAll(),
         jobsAPI.getAll(),
-        testimonialsAPI.getAll(),
         faqAPI.getAll(),
         donationsAPI.getTiers()
       ]);
