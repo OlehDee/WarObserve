@@ -541,6 +541,8 @@ async def delete_item(collection_name: str, item_id: str):
             success=True,
             message="Item deleted successfully"
         )
+    except HTTPException:
+        raise  # Re-raise HTTPExceptions as-is
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
