@@ -58,7 +58,7 @@ const Modal = ({ isOpen, onClose, type, data, onSubmit, formData, setFormData, f
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '16px', marginBottom: '16px' }}>
             <div>
               <label style={{ display: 'block', fontSize: '14px', fontWeight: '600', marginBottom: '6px', color: 'var(--text-primary)' }}>
-                Ім'я *
+                Name *
               </label>
               <input
                 type="text"
