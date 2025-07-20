@@ -184,7 +184,7 @@ const Modal = ({ isOpen, onClose, type, data, onSubmit, formData, setFormData, f
               ) : (
                 <Send size={16} style={{ marginRight: '8px' }} />
               )}
-              {formSubmitting ? 'Відправляється...' : 'Надіслати заявку'}
+              {formSubmitting ? 'Submitting...' : 'Submit Application'}
             </button>
             <button
               type="button"
