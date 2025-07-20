@@ -282,6 +282,19 @@ const Home = () => {
     }
   };
 
+  // Handle modal operations
+  const openModal = (type, data) => {
+    setModalType(type);
+    setModalData(data);
+    setModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+    setModalType(null);
+    setModalData(null);
+  };
+
   // Loading component
   const LoadingSpinner = ({ size = 20 }) => (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
