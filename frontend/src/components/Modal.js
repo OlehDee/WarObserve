@@ -285,7 +285,7 @@ const Modal = ({ isOpen, onClose, type, data, onSubmit, formData, setFormData, f
               color: data.status === 'Completed' ? '#166534' : '#a16207'
             }}
           >
-            {data.status === 'Completed' ? '✅ Завершено' : '🔄 В процесі'}
+            {data.status === 'Completed' ? '✅ Completed' : '🔄 In Progress'}
           </span>
           {data.category && (
             <span style={{ 
