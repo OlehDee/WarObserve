@@ -217,16 +217,17 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Homepage Loading and Sections"
-    - "Navigation and Smooth Scrolling"
     - "Content Display and API Integration"
-    - "Contact Form Functionality"
-    - "Job Application Process"
+    - "Job Application Process"  
     - "Donation System"
-  stuck_tasks: []
-  test_all: true
-  test_priority: "high_first"
+  stuck_tasks:
+    - "Content Display and API Integration"
+    - "Donation System"
+  test_all: false
+  test_priority: "stuck_first"
 
 agent_communication:
     -agent: "testing"
     -message: "Starting comprehensive testing of War:Observe website. Will test all main features including homepage loading, navigation, content display, interactive forms, and API integration as requested in the review."
+    -agent: "testing"
+    -message: "TESTING COMPLETED: Comprehensive testing of War:Observe website finished. ✅ WORKING: Homepage loading (all 12 sections), Navigation (smooth scrolling), Contact form, User experience elements. ❌ ISSUES FOUND: 1) API Integration - News, Team, Partners, FAQ, Jobs endpoints return empty arrays. 2) Donation system - 500 server error on /api/donate. 3) Job applications - Cannot test due to no job data. Backend API is healthy but missing data in several collections."
