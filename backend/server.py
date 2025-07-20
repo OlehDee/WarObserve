@@ -350,7 +350,7 @@ async def process_donation(donation: DonationCreate):
         return APIResponse(
             success=True,
             message="Donation processed successfully",
-            data={"donationId": result["id"], "paymentId": donation_data["paymentId"]}
+            data={"donationId": result.get("id", result.get("_id")), "paymentId": donation_data["paymentId"]}
         )
     except Exception as e:
         logger.error(f"Error processing donation: {str(e)}")
