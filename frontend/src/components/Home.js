@@ -683,13 +683,13 @@ const Home = () => {
                     €{tier.amount}
                   </div>
                   <p className="body-md" style={{ marginBottom: '16px' }}>{tier.description}</p>
-                  <ul style={{ listStyle: 'none', marginBottom: '24px' }}>
-                    {tier.benefits.map((benefit, index) => (
+                    <ul style={{ listStyle: 'none', marginBottom: '24px' }}>
+                    {tier.benefits && Array.isArray(tier.benefits) ? tier.benefits.map((benefit, index) => (
                       <li key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
                         <div style={{ width: '6px', height: '6px', background: 'var(--brand-green)', borderRadius: '50%', marginRight: '8px' }}></div>
                         {benefit}
                       </li>
-                    ))}
+                    )) : <li>No benefits listed</li>}
                   </ul>
                   <button 
                     className="btn-primary" 
