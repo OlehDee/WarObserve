@@ -117,12 +117,12 @@ const Modal = ({ isOpen, onClose, type, data, onSubmit, formData, setFormData, f
           
           <div style={{ marginBottom: '16px' }}>
             <label style={{ display: 'block', fontSize: '14px', fontWeight: '600', marginBottom: '6px', color: 'var(--text-primary)' }}>
-              Досвід роботи *
+              Work Experience *
             </label>
             <textarea
               value={formData.experience || ''}
               onChange={(e) => setFormData({ ...formData, experience: e.target.value })}
-              placeholder="Розкажіть про ваш релевантний досвід..."
+              placeholder="Tell us about your relevant experience..."
               style={{
                 width: '100%',
                 padding: '12px',
