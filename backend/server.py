@@ -507,6 +507,8 @@ async def update_item(collection_name: str, item_id: str, update_data: dict):
             message="Item updated successfully",
             data=updated_item
         )
+    except HTTPException:
+        raise  # Re-raise HTTPExceptions as-is
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
