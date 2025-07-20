@@ -40,6 +40,9 @@ import {
 } from '../services/api';
 
 const Home = () => {
+  // Mobile menu state
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   // State for API data
   const [newsArticles, setNewsArticles] = useState([]);
   const [teamMembers, setTeamMembers] = useState([]);
