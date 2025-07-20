@@ -366,6 +366,218 @@ async def health_check():
         "timestamp": datetime.utcnow().isoformat()
     }
 
+# Admin CRUD endpoints
+@api_router.get("/admin/collections")
+async def get_collections_info():
+    """Get information about all collections"""
+    try:
+        collections_info = []
+        crud_instances = {
+            'news_articles': news_articles_crud,
+            'team_members': team_members_crud,
+            'research_projects': research_projects_crud,
+            'partners': partners_crud,
+            'resources': resources_crud,
+            'job_openings': job_openings_crud,
+            'testimonials': testimonials_crud,
+            'faq': faqs_crud,
+            'donations': donations_crud
+        }
+        
+        for name, crud in crud_instances.items():
+            count = await crud.count()
+            collections_info.append({
+                'name': name,
+                'count': count,
+                'display_name': name.replace('_', ' ').title()
+            })
+        
+        return {"collections": collections_info}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.get("/admin/{collection_name}")
+async def get_collection_data(collection_name: str, skip: int = 0, limit: int = 50):
+    """Get all data from a specific collection"""
+    try:
+        crud_instances = {
+            'news_articles': news_articles_crud,
+            'team_members': team_members_crud,
+            'research_projects': research_projects_crud,
+            'partners': partners_crud,
+            'resources': resources_crud,
+            'job_openings': job_openings_crud,
+            'testimonials': testimonials_crud,
+            'faq': faqs_crud,
+            'donations': donations_crud
+        }
+        
+        if collection_name not in crud_instances:
+            raise HTTPException(status_code=404, detail="Collection not found")
+        
+        crud = crud_instances[collection_name]
+        data = await crud.get_all(skip=skip, limit=limit)
+        total = await crud.count()
+        
+        return {
+            "collection": collection_name,
+            "data": data,
+            "total": total,
+            "skip": skip,
+            "limit": limit
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.get("/admin/{collection_name}/{item_id}")
+async def get_item_by_id(collection_name: str, item_id: str):
+    """Get specific item by ID"""
+    try:
+        crud_instances = {
+            'news_articles': news_articles_crud,
+            'team_members': team_members_crud,
+            'research_projects': research_projects_crud,
+            'partners': partners_crud,
+            'resources': resources_crud,
+            'job_openings': job_openings_crud,
+            'testimonials': testimonials_crud,
+            'faq': faqs_crud,
+            'donations': donations_crud
+        }
+        
+        if collection_name not in crud_instances:
+            raise HTTPException(status_code=404, detail="Collection not found")
+        
+        crud = crud_instances[collection_name]
+        item = await crud.get_by_id(item_id)
+        
+        if not item:
+            raise HTTPException(status_code=404, detail="Item not found")
+        
+        return item
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.put("/admin/{collection_name}/{item_id}")
+async def update_item(collection_name: str, item_id: str, update_data: dict):
+    """Update specific item"""
+    try:
+        crud_instances = {
+            'news_articles': news_articles_crud,
+            'team_members': team_members_crud,
+            'research_projects': research_projects_crud,
+            'partners': partners_crud,
+            'resources': resources_crud,
+            'job_openings': job_openings_crud,
+            'testimonials': testimonials_crud,
+            'faq': faqs_crud,
+            'donations': donations_crud
+        }
+        
+        if collection_name not in crud_instances:
+            raise HTTPException(status_code=404, detail="Collection not found")
+        
+        crud = crud_instances[collection_name]
+        
+        # Remove system fields that shouldn't be updated
+        system_fields = ['id', '_id', 'createdAt']
+        for field in system_fields:
+            update_data.pop(field, None)
+        
+        # Convert datetime strings to datetime objects if needed
+        for key, value in update_data.items():
+            if isinstance(value, str) and ('date' in key.lower() or 'at' in key.lower()):
+                try:
+                    from datetime import datetime
+                    update_data[key] = datetime.fromisoformat(value.replace('Z', '+00:00'))
+                except:
+                    pass  # Keep as string if parsing fails
+        
+        updated_item = await crud.update(item_id, update_data)
+        
+        if not updated_item:
+            raise HTTPException(status_code=404, detail="Item not found")
+        
+        return APIResponse(
+            success=True,
+            message="Item updated successfully",
+            data=updated_item
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.delete("/admin/{collection_name}/{item_id}")
+async def delete_item(collection_name: str, item_id: str):
+    """Delete specific item"""
+    try:
+        crud_instances = {
+            'news_articles': news_articles_crud,
+            'team_members': team_members_crud,
+            'research_projects': research_projects_crud,
+            'partners': partners_crud,
+            'resources': resources_crud,
+            'job_openings': job_openings_crud,
+            'testimonials': testimonials_crud,
+            'faq': faqs_crud,
+            'donations': donations_crud
+        }
+        
+        if collection_name not in crud_instances:
+            raise HTTPException(status_code=404, detail="Collection not found")
+        
+        crud = crud_instances[collection_name]
+        success = await crud.delete(item_id)
+        
+        if not success:
+            raise HTTPException(status_code=404, detail="Item not found")
+        
+        return APIResponse(
+            success=True,
+            message="Item deleted successfully"
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.post("/admin/{collection_name}")
+async def create_item(collection_name: str, item_data: dict):
+    """Create new item in collection"""
+    try:
+        crud_instances = {
+            'news_articles': news_articles_crud,
+            'team_members': team_members_crud,
+            'research_projects': research_projects_crud,
+            'partners': partners_crud,
+            'resources': resources_crud,
+            'job_openings': job_openings_crud,
+            'testimonials': testimonials_crud,
+            'faq': faqs_crud,
+            'donations': donations_crud
+        }
+        
+        if collection_name not in crud_instances:
+            raise HTTPException(status_code=404, detail="Collection not found")
+        
+        crud = crud_instances[collection_name]
+        
+        # Convert datetime strings to datetime objects if needed
+        for key, value in item_data.items():
+            if isinstance(value, str) and ('date' in key.lower() or 'at' in key.lower()):
+                try:
+                    from datetime import datetime
+                    item_data[key] = datetime.fromisoformat(value.replace('Z', '+00:00'))
+                except:
+                    pass  # Keep as string if parsing fails
+        
+        new_item = await crud.create(item_data)
+        
+        return APIResponse(
+            success=True,
+            message="Item created successfully",
+            data=new_item
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 # Include the router in the main app
 app.include_router(api_router)
 
