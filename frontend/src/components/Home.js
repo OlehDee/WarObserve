@@ -104,7 +104,6 @@ const Home = () => {
         partnersData,
         resourcesData,
         jobsData,
-        testimonialsData,
         faqDataResponse,
         donationData
       ] = await Promise.allSettled([
