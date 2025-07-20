@@ -302,6 +302,62 @@ const Home = () => {
     setModalOpen(false);
     setModalType(null);
     setModalData(null);
+    // Clear job application form when closing
+    if (modalType === 'job-application') {
+      setJobApplicationForm({
+        name: '',
+        email: '',
+        phone: '',
+        experience: '',
+        coverLetter: ''
+      });
+    }
+  };
+
+  // Handle job application
+  const openJobApplication = (job) => {
+    setJobApplicationForm({
+      jobId: job.id,
+      jobTitle: job.title,
+      name: '',
+      email: '',
+      phone: '',
+      experience: '',
+      coverLetter: ''
+    });
+    openModal('job-application', job);
+  };
+
+  const handleJobApplicationSubmit = async (e) => {
+    e.preventDefault();
+    setFormSubmitting(true);
+
+    try {
+      // Prepare application data
+      const applicationData = {
+        jobId: jobApplicationForm.jobId,
+        jobTitle: jobApplicationForm.jobTitle,
+        applicantName: jobApplicationForm.name,
+        applicantEmail: jobApplicationForm.email,
+        applicantPhone: jobApplicationForm.phone,
+        experience: jobApplicationForm.experience,
+        coverLetter: jobApplicationForm.coverLetter,
+        appliedAt: new Date().toISOString()
+      };
+
+      // Submit application (in real app, this would be an API call)
+      console.log('Submitting job application:', applicationData);
+      
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      alert(`Дякуємо за вашу заявку на позицію "${jobApplicationForm.jobTitle}"! Ми зв'яжемося з вами найближчим часом.`);
+      closeModal();
+    } catch (error) {
+      alert(`Помилка при відправці заявки: ${error.message}`);
+    } finally {
+      setFormSubmitting(false);
+    }
   };
 
   // Loading component
