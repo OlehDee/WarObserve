@@ -1058,6 +1058,14 @@ const Home = () => {
           </div>
         </div>
       </footer>
+
+      {/* Modal */}
+      <Modal 
+        isOpen={modalOpen}
+        onClose={closeModal}
+        type={modalType}
+        data={modalData}
+      />
     </div>
   );
 };
