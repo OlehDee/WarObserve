@@ -50,8 +50,17 @@ const Home = () => {
 
   // Modal state
   const [modalOpen, setModalOpen] = useState(false);
-  const [modalType, setModalType] = useState(null); // 'news' or 'project'
+  const [modalType, setModalType] = useState(null); // 'news', 'project', or 'job-application'
   const [modalData, setModalData] = useState(null);
+
+  // Job application state
+  const [jobApplicationForm, setJobApplicationForm] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    experience: '',
+    coverLetter: ''
+  });
 
   // State for API data
   const [newsArticles, setNewsArticles] = useState([]);
