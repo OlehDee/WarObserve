@@ -349,7 +349,7 @@ const Modal = ({ isOpen, onClose, type, data, onSubmit, formData, setFormData, f
         
         {data.technologies && data.technologies.length > 0 && (
           <div className="project-technologies" style={{ paddingTop: '24px', borderTop: '1px solid var(--border-light)' }}>
-            <h4 style={{ fontSize: '14px', fontWeight: '600', marginBottom: '12px', color: 'var(--text-primary)' }}>Методології та технології:</h4>
+            <h4 style={{ fontSize: '14px', fontWeight: '600', marginBottom: '12px', color: 'var(--text-primary)' }}>Methodologies and Technologies:</h4>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
               {data.technologies.map((tech, index) => (
                 <span 
