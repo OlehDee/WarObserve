@@ -440,7 +440,7 @@ const Home = () => {
                 Contact
               </a>
               <a 
-                href="#/admin" 
+                href="/admin" 
                 className="mobile-nav-link admin-link" 
                 onClick={() => setMobileMenuOpen(false)}
               >
