@@ -40,14 +40,6 @@ export const teamMembers = [
     email: "Office@warobserve.com",
     image: "https://www.warobserve.com/img/team/B.Z..jpeg",
     bio: "International law specialist focusing on human rights violations in armed conflicts."
-  },
-  {
-    id: 6,
-    name: "Ambassador",
-    position: "Content maker",
-    email: "office@warobserve.com",
-    image: "https://www.warobserve.com/img/team/%D0%B0%D0%BC.jpg",
-    bio: "Creative content specialist developing multimedia materials for conflict documentation."
   }
 ];
 
