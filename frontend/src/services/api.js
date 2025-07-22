@@ -1,6 +1,22 @@
 import axios from 'axios';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+// Auto-detect backend URL based on environment
+const getBackendUrl = () => {
+  // If environment variable is set, use it
+  if (process.env.REACT_APP_BACKEND_URL) {
+    return process.env.REACT_APP_BACKEND_URL;
+  }
+  
+  // For production, use same origin
+  if (process.env.NODE_ENV === 'production') {
+    return window.location.origin;
+  }
+  
+  // For development, default to localhost
+  return 'http://localhost:8001';
+};
+
+const BACKEND_URL = getBackendUrl();
 const API_BASE = `${BACKEND_URL}/api`;
 
 // Configure axios defaults
