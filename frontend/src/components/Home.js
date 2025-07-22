@@ -362,7 +362,7 @@ const Home = () => {
             <a href="#team" className="nav-link" onClick={() => scrollToSection('team')}>Team</a>
             <a href="#resources" className="nav-link" onClick={() => scrollToSection('resources')}>Resources</a>
             <a href="#contact" className="nav-link" onClick={() => scrollToSection('contact')}>Contact</a>
-            <a href="#/admin" className="nav-link" style={{ color: 'var(--brand-green)' }}>Admin</a>
+            <a href="/admin" className="nav-link" style={{ color: 'var(--brand-green)' }}>Admin</a>
           </nav>
 
           {/* Mobile Menu Button */}
